@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="B2BStore">
+ <sql id="selectSql">
+  select id,
+  		name,
+ 	 	code,
+ 	 	status,
+ 	 	area_id areaId,
+ 	 	sub_area_id subAreaId,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from b2b_cms_store
+ </sql>
+ 
+ <select id="selectAllB2BStore" resultType="B2BStore">
+     <include refid="selectSql"></include>
+     <where>
+     <!--  <![CDATA[  status <>1]]>   -->
+     </where>
+ </select>
+ 
+ <select id="selectB2BStoreByCode" resultType="B2BStore">
+  <include refid="selectSql"></include>
+  <where>
+     code =#{code}
+  </where>
+ </select>
+ 
+  <select id="selectB2BStoreById" resultType="B2BStore">
+  <include refid="selectSql"></include>
+  <where>
+     id =#{id}
+  </where>
+ </select>
+ 
+ <select id="selectB2BStoreByIds" resultType="B2BStore" >
+  <include refid="selectSql"></include>
+  <where>
+     <!-- <![CDATA[  status <>1]]>    and  -->
+    id in  
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+       #{item}  
+    </foreach> 
+  </where>
+ </select>
+ 
+ <select id="selectB2BStoreByNameCode" resultType="B2BStore" parameterType="B2BStore" >
+  <include refid="selectSql"></include>
+  <where>
+		<if test="name != null and name != ''">
+   			<![CDATA[  
+             		and name like '%' #{name} '%'
+           	]]>  
+   		</if>
+   		<if test="code != null and  code != ''">
+   			<![CDATA[  
+             		and code = #{code}
+           	]]>  
+   		</if> 
+  </where>
+ </select>
+ 
+ 
+ <select id="selectB2BStoreByCodes" resultType="B2BStore" >
+  <include refid="selectSql"></include>
+  <where>
+     <!-- <![CDATA[  status <>1]]>    and  -->
+    code in  
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+       #{item}  
+    </foreach> 
+  </where>
+ </select>
+ <insert id="insertB2BStoreBatch" parameterType="B2BStore">
+   insert into b2b_cms_store(name,code,status,area_id,sub_area_id,create_id,update_id)values
+   <foreach collection="list" item="item" index="index" separator =",">
+    (#{item.name},#{item.code},#{item.status},#{item.areaId},#{item.subAreaId},#{item.createId},#{item.updateId})   
+    </foreach>
+</insert>
+
+	<delete id="deleteB2BStoreAll">
+      delete from b2b_cms_store
+	</delete>
+	
+<select id="selectB2BStoreByPgSeq" resultType="B2BStore">
+ 	 <include refid="selectSql"></include>
+  		<where>
+     	<if test="_parameter  != null and _parameter != ''">
+      	area_id =#{areaId}
+     	</if>
+  		</where>
+</select>
+
+<select id="selectB2BStoreBySubareaId" resultType="B2BStore">
+ 	 <include refid="selectSql"></include>
+  		<where>
+     	<if test="_parameter  != null and _parameter != ''">
+      	 <choose>
+      	 	<when test="_parameter.split(',').length > 1">
+      	 		sub_area_id in 
+      	 		<foreach collection="_parameter.split(',')" item="id" index="no" open="("
+						 separator="," close=")">
+      	 				<![CDATA[#{id}]]>
+      	 		</foreach>
+      		 </when>
+      	 	<otherwise>
+      	 		sub_area_id =#{subAreaId}
+      	 	</otherwise>
+      	 </choose>
+      	 
+     	</if>
+  		</where>
+</select>
+
+
+<select id="selectB2BStoreByNameOrCode" resultType="B2BStore" >
+  <include refid="selectSql"></include>
+  <where>
+  		<!--  <![CDATA[  status <>1]]>   -->
+		<if test="name != null and name != ''">
+   			<![CDATA[  
+             		(name like '%' #{name} '%' or code = #{name})
+           	]]>  
+   		</if>
+  </where>
+ </select>
+ 
+</mapper>

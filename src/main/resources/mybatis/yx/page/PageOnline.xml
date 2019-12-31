@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Page">
+	<sql id="selectOnlinePage">
+		select id,
+        	   store_group_ids storeGroupIds,
+        	   xiao_qu_ids xiaoQuIds,
+        	   yx_cms_template_id templateId,
+        	   type,
+        	   page_properties pageProperties,
+        	   name,
+        	   modules,
+        	   url,
+        	   description,
+        	   status,
+        	   main_pic_url mainPicUrl,
+        	   activity_begin_time activityBeginTime,
+        	   activity_end_time activityEndTime,
+        	   administrator administrator,
+        	   search_words searchWords,
+        	   search_ad_pic searchAdPic,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   combine_id combineId
+        	   from yx_cms_page_online
+	</sql>
+	
+    <select id="selectOnlinePageById" parameterType="long" resultType="Page">
+    	<include refid="selectOnlinePage"/>
+         where id = #{id} 
+    </select>
+    
+    <insert id="insertOnlinePage" parameterType="Page" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_page_online(
+    		   id,	
+    		   store_group_ids,
+				xiao_qu_ids,
+        	   yx_cms_template_id,
+        	   type,
+        	   page_properties,
+        	   name,
+        	   modules,
+        	   url,
+        	   description,
+        	   status,
+        	   main_pic_url,
+        	   activity_begin_time,
+        	   activity_end_time,
+        	   administrator,
+				<if test="searchWords != null">search_words,</if>
+				<if test="searchAdPic != null">search_ad_pic,</if>
+        	   create_id,
+        	   update_id) 
+    	values(
+    		   #{id},	
+    		   #{storeGroupIds},
+				#{xiaoQuIds},
+        	   #{templateId},
+        	   #{type},
+        	   #{pageProperties},
+        	   #{name},
+        	   #{modules},
+        	   #{url},
+        	   #{description},
+        	   #{status},
+        	   #{mainPicUrl},
+        	   #{activityBeginTime},
+        	   #{activityEndTime},
+        	   #{administrator},
+				<if test="searchWords != null">#{searchWords},</if>
+				<if test="searchAdPic != null">#{searchAdPic},</if>
+        	   #{createId},
+        	   #{updateId}
+        	   )
+    </insert>
+    
+    <update id="updateOnlinePage" parameterType="Page">
+    	update yx_cms_page_online set 
+			   store_group_ids=#{storeGroupIds},
+				xiao_qu_ids=#{xiaoQuIds},
+        	   yx_cms_template_id=#{templateId},
+        	   type=#{type},
+        	   page_properties=#{pageProperties},
+        	   name=#{name},
+        	   modules=#{modules},
+        	   url=#{url},
+        	   description=#{description},
+        	   status=#{status},
+        	   main_pic_url=#{mainPicUrl},
+        	   activity_begin_time=#{activityBeginTime},
+        	   activity_end_time=#{activityEndTime},
+        	   administrator=#{administrator},
+				<if test="searchWords != null" >search_words=#{searchWords},</if>
+				<if test="searchAdPic != null" >search_ad_pic=#{searchAdPic},</if>
+        	   update_id=#{updateId}
+    	where id=#{id}
+    </update>
+    
+    <update id="updateOnlinePageStatus" parameterType="Page">
+    	update yx_cms_page_online set  status=#{status} where id=#{id}
+    </update>
+    
+    <select id="selectOnlinePageAll" resultType="Page" parameterType="Page">
+    <include refid="selectOnlinePage"/>
+    
+    <where>
+     <if test="id != null and id != ''">
+         id =#{id}
+     </if>
+     <if test="name != null and name != ''">
+         name =#{name}
+     </if>
+    </where>
+    </select>
+    
+    <delete id="deleteOnlinePage">
+      delete  from yx_cms_page_online where  id = #{id}
+    </delete>
+</mapper>

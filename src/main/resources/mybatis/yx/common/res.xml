@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Res">
+	<sql id="selectRes">
+		select id,
+        	   url,
+        	   name,
+        	   temp,
+        	   env,
+        	   update_time updateTime
+        	   from yx_cms_res
+	</sql>
+    
+	<select id="selectResListByRes" parameterType="Res" resultType="Res">
+    	<include refid="selectRes"/>
+    	<where>
+    		<if test="name != null and name != ''">
+    			<![CDATA[  
+              		and name = #{name}
+            	]]>  
+    		</if>
+    		<if test="temp != null and temp != ''">
+    			<![CDATA[  
+              		and temp = #{temp}
+            	]]>  
+    		</if>
+    		<if test="env != null and env != ''">
+    			<![CDATA[  
+              		and env = #{env}
+            	]]>  
+    		</if>
+    	</where>
+    	order by id desc
+    </select>
+    
+    <select id="selectResById" parameterType="Long" resultType="Res">
+    	<include refid="selectRes"/>
+    	 where id = #{id}
+    </select>
+    
+    <insert id="insertRes" parameterType="Res" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_res(name,url,temp,env) 
+    	values(#{name},#{url},#{temp},#{env})
+    </insert>
+    
+    <update id="updateResTemp" parameterType="Res">
+    	update yx_cms_res set temp=#{temp} where id=#{id}
+    </update>
+    
+    <update id="updateResTemp2" parameterType="Long">
+    	update yx_cms_res set temp=temp+1 where id=#{id}
+    </update>
+    
+    <delete id="deleteRes" parameterType="long">
+    	delete from yx_cms_res where id = #{id}
+    </delete>
+    
+    <update id="updNameAndPath" parameterType="Res">
+    	update yx_cms_res set name=#{name},url=#{url} where id=#{id}
+    </update>
+    
+</mapper>

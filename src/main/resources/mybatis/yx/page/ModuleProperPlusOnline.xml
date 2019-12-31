@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ModuleProperPlus">
+	<sql id="selectModuleProperPlusOnline">
+		select id,
+        	   module_id moduleId,
+        	   store_code storeCode,
+        	   module_proper moduleProper,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module_proper_plus_online
+	</sql>
+
+    <select id="selectModuleProperPlusOnlineByModuleId" parameterType="long" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlusOnline"/>
+         where module_id = #{moduleId} 
+    </select> 
+    
+     <select id="selectModuleProperPlusOnlineById" parameterType="long" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlusOnline"/>
+         where id = #{id} 
+    </select> 
+    
+    <select id="selectModuleProperPlusOnlineByIds" parameterType="String" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlusOnline"/>
+    	 where id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+    
+    <insert id="insertModuleProperPlusOnline" parameterType="ModuleProperPlus" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_module_proper_plus_online(id,
+    	module_id,store_code,module_proper,
+    	create_id,create_time,update_id,update_time) 
+    	values(#{id},
+    	#{moduleId},#{storeCode},#{moduleProper},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+    
+    <update id="updateModuleProperPlusOnline" parameterType="ModuleProperPlus">
+    	update yx_cms_module_proper_plus_online set 
+    	module_id=#{moduleId},
+    	store_code=#{storeCode},
+    	module_proper=#{moduleProper},
+    	update_id=#{updateId},
+    	update_time=#{updateTime}
+    	where id=#{id}
+    </update>
+    
+    <delete id="deleteModuleProperPlusOnlineById" parameterType="Long">
+   		delete from yx_cms_module_proper_plus_online where id = #{id}
+   </delete>
+   
+   <delete id="deleteModuleProperPlusOnlineByModuleId" parameterType="long">
+   		delete from yx_cms_module_proper_plus_online where module_id = #{moduleId}
+   </delete>
+    
+</mapper>

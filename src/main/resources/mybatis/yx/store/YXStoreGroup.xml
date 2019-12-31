@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXStoreGroup">
+ <sql id="selectSql">
+  select id,
+  		name,
+  		pid,
+  		level,
+  		store_id storeId,
+  		pg_seq pgSeq,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_cms_store_group
+ </sql>
+ 
+ <select id="selectAllStoreGroup" resultType="YXStoreGroup">
+     <include refid="selectSql"></include>
+ </select>
+ 
+  <select id="selectStoreById" resultType="YXStoreGroup" parameterType="long">
+     <include refid="selectSql"></include>
+     <where>
+      id=#{id}
+     </where>
+  </select>
+
+    <select id="queryStoreGroupByParam" resultType="YXStoreGroup" parameterType="YXStoreGroup">
+        <include refid="selectSql"></include>
+        <where>
+            <if test="level>0">
+                <![CDATA[
+             		and level<#{level}
+           	]]>
+            </if>
+
+            <if test="pid>0">
+                <![CDATA[
+             		and pid=#{pid}
+           	]]>
+            </if>
+        </where>
+    </select>
+  
+	<select id="listYXStoreGroupByIds" parameterType="String" resultType="YXStoreGroup">
+    	<include refid="selectSql"/>where id in
+    	<foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+	</select>
+  
+  <update id="updateStoreGroup" parameterType="YXStoreGroup">
+   update yx_cms_store_group set name = #{name},store_id =#{storeId},pg_seq=#{pgSeq},pid=#{pid},level=#{level},
+   update_id =#{updateId},update_time = #{updateTime} where id=#{id}
+  </update>
+ 
+   <insert id="insertStoreGroup" parameterType="YXStoreGroup">
+   insert into yx_cms_store_group(name,pid,level,store_id,pg_seq,create_id,update_id,update_time)
+   values(#{name},#{pid},#{level},#{storeId},#{pgSeq},#{createId},#{updateId},#{updateTime})
+   </insert>
+
+    <delete id="deleteStoreGroup">
+      delete  from yx_cms_store_group where  id = #{id}
+    </delete>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxCommodityRepeatCtl">
+	<sql id="selectYxCommodityRepeatCtl">
+		select id,
+        	   type,
+        	   online_status onlineStatus,
+        	   store_code storeCode,
+        	   commodity_ids commodityIds,
+        	   date_stamp dateStamp,
+        	   module_id moduleId,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_commodity_repeat_ctl
+	</sql>
+
+    <select id="selectYxCommodityRepeatCtlById" parameterType="long" resultType="YxCommodityRepeatCtl">
+    	<include refid="selectYxCommodityRepeatCtl"/>
+         where id = #{id} 
+    </select> 
+    
+    <select id="selectYxCommodityRepeatCtlByCodeDate" parameterType="YxCommodityRepeatCtl" resultType="YxCommodityRepeatCtl">
+    	<include refid="selectYxCommodityRepeatCtl"/>
+    	  where type = #{type} and online_status=#{onlineStatus} and store_code = #{storeCode} and date_stamp = #{dateStamp}
+    </select>
+    
+    
+    <insert id="insertYxCommodityRepeatCtl" parameterType="YxCommodityRepeatCtl" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_commodity_repeat_ctl(online_status,
+    	type,store_code,commodity_ids,date_stamp,module_id,create_id,create_time,update_id,update_time) 
+    	values(#{onlineStatus},
+    	#{type},#{storeCode},#{commodityIds},#{dateStamp},#{moduleId},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+    
+    <delete id="deleteYxCommodityRepeatCtlById" parameterType="Long">
+   		delete from yx_cms_commodity_repeat_ctl where id = #{id}
+   </delete>
+   
+   <update id="updateYxCommodityRepeatCtl" parameterType="YxCommodityRepeatCtl">
+    	update yx_cms_commodity_repeat_ctl set 
+    	module_id=#{moduleId},
+    	store_code=#{storeCode},
+    	commodity_ids=#{commodityIds},
+    	update_id=#{updateId},
+    	update_time=#{updateTime}
+    	where id=#{id}
+    </update>
+   
+   <delete id="deleteYxCommodityRepeatCtlByTypeAndCode" parameterType="YxCommodityRepeatCtl">
+   		delete from yx_cms_commodity_repeat_ctl where type = #{type} and store_code = #{storeCode}
+   </delete>
+    
+</mapper>

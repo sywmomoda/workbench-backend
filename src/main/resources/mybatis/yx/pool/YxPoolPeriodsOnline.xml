@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolPeriods">
+	<sql id="selectYxPoolPeriodsOnline">
+		select id,
+        	   yx_cms_pool_id poolId,
+        	   number,
+        	   name 'name',
+        	   goods,
+        	   begin_time beginTime,
+        	   end_time endTime,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_pool_periods_online
+	</sql>
+
+    <select id="selectYxPoolPeriodsOnlineById" parameterType="long" resultType="YxPoolPeriods">
+    	<include refid="selectYxPoolPeriodsOnline"/>
+         where id = #{id} 
+    </select> 
+
+	<select id="queryOnlPeriodsListByPoolId" parameterType="long" resultType="YxPoolPeriods">
+    	<include refid="selectYxPoolPeriodsOnline"/>
+         where yx_cms_pool_id = #{poolId} order by begin_time asc
+    </select>
+    
+    <insert id="insertYxPoolPeriodsOnline" parameterType="YxPoolPeriods" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_pool_periods_online(id,yx_cms_pool_id,number,name,goods,begin_time,end_time,create_id,create_time,update_id,update_time)
+    	values(#{id},#{poolId},#{number},#{name},#{goods},#{beginTime},#{endTime},#{createId},#{createTime},#{updateId},#{updateTime})
+    </insert>
+    
+    <update id="updateYxPoolPeriodsOnline" parameterType="YxPoolPeriods">
+    	update yx_cms_pool_periods_online set 
+    	yx_cms_pool_id = #{poolId},
+    	name=#{name},
+    	number=#{number},
+    	goods=#{goods},
+    	begin_time=#{beginTime},
+    	end_time=#{endTime},
+    	update_time=#{updateTime},
+    	update_id=#{updateId},
+    	create_time=#{createTime},
+    	create_id=#{createId}
+    	where id=#{id}
+    </update>
+     
+     <delete id="deleteYxPoolPeriodsOnline" parameterType="long">
+      delete from yx_cms_pool_periods_online where id=#{id}
+    </delete>
+
+	<delete id="delPoolPeriodsByIdOnline" parameterType="long">
+		delete from yx_cms_pool_periods_online where id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BpContent">
+ <sql id="selectSql">
+  select id,
+  		channel_type channelType,
+  		page_id pageId,
+  		page_name pageName,
+  		client_type clientType,
+  		page_col pageCol,
+  		status,
+  		track_type trackType,
+  		other_properties otherProperties,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_burial_point_content
+ </sql>
+ 
+ <insert id="insertBpContent" parameterType="BpContent" keyProperty="id" useGeneratedKeys="true">
+   insert into yx_burial_point_content(channel_type,page_id,page_name,
+   client_type,page_col,status,track_type,other_properties,create_id,
+   update_id)values(#{channelType},#{pageId},#{pageName},#{clientType},
+   #{pageCol},#{status},#{trackType},#{otherProperties},#{createId},#{updateId})
+ </insert>
+
+ <select id="selectBpContentList" parameterType="BpContent" resultType="BpContent">
+    <include refid="selectSql"></include>
+    <where>
+     <if test="channelType != null">
+      and channel_type = #{channelType}
+     </if>
+     <if test="pageName != null and pageName != ''">
+       and page_name = #{pageName}
+     </if>
+     <if test="pageId != null and pageId != ''">
+      and page_id = #{pageId}
+     </if>
+     <if test="pageCol != null and pageCol !=''">
+      and page_col =#{pageCol}
+     </if>
+     <if test="clientType != null and clientType !=''">
+       and client_type = #{clientType}
+     </if>
+     <if test="status != null">
+      and status = #{status}
+     </if>
+
+    </where>
+         order by id DESC
+ </select>
+ 
+ <select id="selectBpContentById" parameterType="long" resultType="BpContent">
+   <include refid="selectSql"></include>
+   <where>
+    id =#{id}
+   </where>
+ </select>
+ 
+ <update id="updateBpContent" parameterType="BpContent" >
+   update yx_burial_point_content set  page_id=#{pageId},page_name=#{pageName},client_type=#{clientType},
+   page_col =#{pageCol},track_type=#{trackType},other_properties=#{otherProperties},update_id =#{updateId}
+   where id = #{id}
+ </update>
+			
+ <update id="updateBpContentStatus" parameterType="BpContent">
+  update yx_burial_point_content set status=#{status} where id=#{id}
+ </update>
+ 
+</mapper>

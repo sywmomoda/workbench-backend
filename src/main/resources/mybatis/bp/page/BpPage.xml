@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BpPage">
+ <sql id="selectSql">
+  select id,
+  		channel_type channelType,
+  		page_id pageId,
+  		page_name pageName,
+  		client_type clientType,
+  		other_proper otherProper,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_burial_point
+ </sql>
+ 
+
+ 
+ <select id="selectBpPageList" parameterType="BpPage"  resultType="BpPage">
+   <include refid="selectSql"></include>
+   <where>
+          <if test="id !=null and id !=''">
+           and id = #{id}
+          </if>
+         <if test="pageId !=null and pageId !=''">
+           and page_id=#{pageId}
+         </if>
+         <if test="channelType !=null and channelType !=''">
+           and channel_type = #{channelType}
+         </if>
+          <if test="pageName !=null and pageName !=''">
+           and page_name =#{pageName}
+          </if>
+   </where>
+   order by id DESC
+ </select>
+ 
+ <select id="selectBpPageById" parameterType="long" resultType="BpPage">
+   <include refid="selectSql"></include>
+   <where>
+           and id = #{id}
+   </where>
+ </select>
+ 
+ <insert id="insertBpPage" parameterType="BpPage" keyProperty="id" useGeneratedKeys="true"> 
+  insert into yx_burial_point(channel_type,page_id,page_name,client_type,other_proper,create_id,update_id)
+  values(#{channelType},#{pageId},#{pageName},#{clientType},#{otherProper},#{createId},#{updateId})
+ </insert>
+
+ <update id="updateBpPage" parameterType="BpPage">
+   update yx_burial_point set page_id = #{pageId},page_name=#{pageName},other_proper=#{otherProper}, 
+   client_type =#{clientType},update_id = #{updateId} where id=#{id}
+ </update>
+
+ 
+</mapper>

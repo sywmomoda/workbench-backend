@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ModuleMultiTab">
+	<sql id="selectModuleMultiTab">
+		select id,
+        	   store_code storeCode,
+        	   module_id moduleId,
+        	   tab_name tabName,
+        	   begin_time beginTime,
+        	   end_time endTime,
+        	   content content,
+        	   content1 content1,
+        	   link_type linkType,
+        	   link_data linkData,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module_multi_tab
+	</sql>
+
+    <sql id="moduleMultiTabName">
+          yx_cms_module_multi_tab
+    </sql>
+
+    
+     <select id="selectModuleMultiTabById" parameterType="long" resultType="ModuleMultiTab">
+    	<include refid="selectModuleMultiTab"/>
+         where id = #{id} 
+    </select>
+
+    
+    <select id="selectModuleMultiTabByIds" parameterType="String" resultType="ModuleMultiTab">
+    	<include refid="selectModuleMultiTab"/>
+    	 where id in
+		  <foreach item="item" collection="_parameter.split(',')" open="(" separator="," close=")">#{item}</foreach>
+         order by find_in_set(id,#{_parameter})
+    </select>
+    
+    <insert id="insertModuleMultiTab" parameterType="ModuleMultiTab" useGeneratedKeys="true" keyProperty="id">
+    	insert into <include refid="moduleMultiTabName"></include>(
+        store_code,tab_name,begin_time,end_time,content,
+        <if test="content1 != null">content1,</if>
+    	link_type,link_data,create_id,create_time,update_id,update_time)
+    	values(
+    	#{storeCode},
+    	#{tabName},#{beginTime},#{endTime},#{content},
+        <if test="content1 != null">#{content1},</if>
+    	#{linkType},#{linkData},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+
+    <update id="updateModuleMultiTab" parameterType="ModuleMultiTab">
+    	update <include refid="moduleMultiTabName"></include> set
+    	<if test="storeCode != null">
+            store_code=#{storeCode},
+        </if>
+        <if test="tabName !=null">
+            tab_name=#{tabName},
+        </if>
+        <if test="moduleId !=null">
+            module_id=#{moduleId},
+        </if>
+        begin_time=#{beginTime},
+        end_time=#{endTime},
+        content=#{content},
+        <if test="content1 != null">
+            content1=#{content1},
+        </if>
+        link_type=#{linkType},
+        link_data=#{linkData},
+    	update_id=#{updateId},
+    	update_time=#{updateTime}
+    	where id=#{id}
+    </update>
+
+    <delete id="deleteModuleMultiTabById" parameterType="Long">
+   		delete from <include refid="moduleMultiTabName"></include> where id = #{id}
+   </delete>
+    
+</mapper>

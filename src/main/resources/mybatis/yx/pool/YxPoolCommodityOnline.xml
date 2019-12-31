@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolCommodity">
+	<sql id="selectYxPoolCommodityOnline">
+		select id,
+        	   commodity_id commodityId,
+        	   title,
+        	   pic_url picUrl,
+        	   pic_turnurl picTurnUrl,
+        	   sell_point sellPoint,
+        	   periods,
+        	   url_type urlType,
+        	   custom_url customUrl,
+        	   promote_text promoteText,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   originate originate,
+        	   url_properties urlProperties,
+        	   class_id classId,
+        	   store_codes storeCodes,
+        	   coupon_properties couponProperties,
+        	   description description,
+        	   remark,
+        	   add_on_date addOnDate
+        	   from yx_cms_pool_commodity_online
+	</sql>
+	<select id="selectYxPoolCommodityOnlineByIds" parameterType="String" resultType="YxPoolCommodity">
+    	<include refid="selectYxPoolCommodityOnline"/>where id in
+    	<foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+   
+   <delete id="deleteCommodityOnlineByIds" parameterType="String">
+   		delete from yx_cms_pool_commodity_online where id in
+    	<foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+   </delete>
+   
+   <insert id="insertBatchYxPoolCommodityOnline" parameterType="list">
+        insert into yx_cms_pool_commodity_online
+        (id,
+   	     commodity_id,
+   	     title,
+   	     pic_url,
+   	     pic_turnurl,
+   	     sell_point,
+   	     periods,
+   	     url_type,
+   	     custom_url,
+   	     promote_text,
+   	     update_id,
+   	     update_time,
+   	     originate,
+   	     url_properties,
+   	     class_id,
+   	     store_codes,coupon_properties,description,remark,add_on_date)
+        values        
+      <foreach collection ="list" item ="item" index ="index" separator =","> 
+       (#{item.id},
+        	   #{item.commodityId},
+        	   #{item.title},
+        	   #{item.picUrl},
+        	   #{item.picTurnUrl},
+        	   #{item.sellPoint},
+        	   #{item.periods},
+        	   #{item.urlType},
+        	   #{item.customUrl},
+        	   #{item.promoteText},
+        	   #{item.updateId},
+        	   #{item.updateTime},
+        	   #{item.originate},
+        	   #{item.urlProperties},
+        	   #{item.classId},
+        	   #{item.storeCodes},
+        	   #{item.couponProperties},
+        	   #{item.description},
+        	   #{item.remark},
+        	   #{item.addOnDate}) 
+      </foreach>
+    </insert>
+    
+    <update id="updateYxPoolCommodityOnline" parameterType="YxPoolCommodity">
+		update yx_cms_pool_commodity_online set
+		commodity_id = #{commodityId},
+		title = #{title},
+		pic_url = #{picUrl},
+		pic_turnurl = #{picTurnUrl},
+		sell_point = #{sellPoint},
+		periods = #{periods},
+		url_type = #{urlType},
+		custom_url = #{customUrl},
+		<choose>
+			<when test="promoteText !=null and promoteText!=''">promote_text = #{promoteText}, </when>
+			<otherwise>promote_text = '', </otherwise>
+		</choose>
+		update_id = #{updateId},
+		update_time =  #{updateTime},
+		originate = #{originate},
+		url_properties = #{urlProperties},
+		class_id = #{classId},
+		store_codes = #{storeCodes},
+		coupon_properties = #{couponProperties},
+		description = #{description},
+		remark = #{remark},
+		add_on_date = #{addOnDate}
+		where id = #{id}    
+    </update>
+
+	<delete id="deleteCommodityOnlineById" parameterType="string">
+		delete from yx_cms_pool_commodity_online where id = #{id}
+	</delete>
+	
+</mapper>

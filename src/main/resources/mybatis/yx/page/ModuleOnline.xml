@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Module">
+	<sql id="selectModuleOnline">
+		select id,
+        	   yx_cms_page_id pageId,
+        	   yx_cms_module_type_id moduleTypeId,
+        	   name,
+        	   store_scope storeScope,
+        	   module_properties moduleProperties,
+        	   administrator,
+        	   module_category moduleCategory,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module_online
+	</sql>
+
+    <select id="selectModuleOnlineById" parameterType="long" resultType="Module">
+    	<include refid="selectModuleOnline"/>
+         where id = #{id} 
+    </select> 
+    
+    <select id="selectModuleOnlinesByIds" parameterType="String" resultType="Module">
+    	<include refid="selectModuleOnline"/>
+    	 where id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+    
+    <insert id="insertModuleOnline" parameterType="Module">
+    	insert into yx_cms_module_online(
+    	id,yx_cms_page_id,yx_cms_module_type_id,name,store_scope,module_properties,administrator,
+    	create_id,create_time,update_id,update_time,
+    	module_category) 
+    	values(
+    	#{id},#{pageId},#{moduleTypeId},#{name},#{storeScope},#{moduleProperties},#{administrator},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime},
+    	#{moduleCategory})
+    </insert>
+    
+     <update id="updateModuleOnline" parameterType="Module">
+    	update yx_cms_module_online set 
+    	yx_cms_page_id=#{pageId},
+    	yx_cms_module_type_id=#{moduleTypeId},
+    	name=#{name},
+    	store_scope=#{storeScope},
+    	module_properties=#{moduleProperties}, 
+    	administrator=#{administrator},
+    	create_id=#{createId},
+    	create_time=#{createTime},
+    	update_id=#{updateId},
+    	update_time=#{updateTime},
+    	module_category=#{moduleCategory}
+    	where id=#{id}
+    </update>
+    
+    <delete id="deleteModuleOnlineById" parameterType="long">
+    	delete from yx_cms_module_online where id = #{id}
+    </delete>
+    
+</mapper>

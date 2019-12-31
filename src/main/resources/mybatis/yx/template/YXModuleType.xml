@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXModuleType">
+ <sql id="selectSql">
+  select id,
+  	     code,
+  		 name,
+  		 module_properties moduleProperties,
+  		 description,
+  		 thumbnail_url thumbnailUrl,
+  		 module_category moduleCategory,
+  		 edit_right editRight,
+  		 delete_right deleteRight,
+  		 move_right moveRight,
+  		 copy_right copyRight,
+  		 display,
+  		 share_right shareRight,
+  		 create_id createId,
+  		 create_time createTime,
+  		 update_id updateId,
+  		 update_time updateTime,
+  		 module_service moduleService
+        from yx_cms_module_type
+ </sql>
+ 
+ <select id="selectAllYXModuleType" resultType="YXModuleType">
+     <include refid="selectSql"></include>
+     <where>
+        <if test="id > 0">
+           and  id = #{id}
+        </if>
+        
+        <if test="code !=null and  code !=''">
+          and code = #{code}
+        </if>
+        
+        <if test="name !=null and  name !=''">
+          and name = #{name}
+        </if>
+        
+        <if test="moduleCategory != null and  moduleCategory !=''">
+          and module_category =#{moduleCategory}
+        </if>
+        
+     </where>
+ </select>
+ 
+ <select id="selectYXModuleTypeById" resultType="YXModuleType" parameterType="long">
+   <include refid="selectSql"></include>
+   <where>
+        id =#{id}
+   </where>
+ </select>
+ 
+ <insert id="insertYXModuleType" parameterType="YXModuleType">
+  insert into yx_cms_module_type(code,name,module_properties,description,
+  thumbnail_url,module_category,move_right,delete_right,copy_right,edit_right,
+  display,share_right,create_id,update_id,module_service)values(#{code},#{name},
+  #{moduleProperties},#{description},#{thumbnailUrl},#{moduleCategory},
+  #{moveRight},#{deleteRight},#{copyRight},#{editRight},#{display},
+  #{shareRight},#{createId},#{updateId},#{moduleService})
+ </insert>
+ 
+ <update id="updateYXModuleType" parameterType="YXModuleType">
+   update yx_cms_module_type set code=#{code},name=#{name},
+   module_properties=#{moduleProperties},description=#{description},
+   thumbnail_url=#{thumbnailUrl},module_category=#{moduleCategory},
+   move_right=#{moveRight},delete_right=#{deleteRight},
+   copy_right=#{copyRight},edit_right=#{editRight},display=#{display},
+   share_right=#{shareRight},update_id=#{updateId},module_service=#{moduleService} where id=#{id}
+ </update>
+ 
+ <select id="selectYXModuleTypeListByIds" parameterType="map" resultType="YXModuleType">
+    	<include refid="selectSql"/>
+        <where>
+    		<if test="display != null and  display != ''">
+    			<![CDATA[  
+              		and display = #{display}  
+            	]]>  
+    		</if>
+    		<if test="moduleTypeIds != null and moduleTypeIds != ''">
+    			<![CDATA[  
+              		and id in (${moduleTypeIds})
+            	]]>  
+    		</if>
+    	</where>
+    </select>
+</mapper>

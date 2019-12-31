@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.feiniu.yx.page.entity.SearchWords">
+    <sql id="baseSql">
+     SElECT id,keywords,pool_id poolId,status,
+     create_id createId,
+     create_time createTime,
+     update_id updateId,
+     update_time updateTime  
+     FROM yx_cms_search_words
+    
+    </sql>
+     <select id="searchWordsList" resultType="com.feiniu.yx.page.entity.SearchWords" parameterType="com.feiniu.yx.page.entity.SearchWords">
+       <include refid="baseSql"></include>
+       <where>
+         <if test="id !=null">
+          and id = #{id}
+         </if>
+         <if test="keywords != null and keywords !=''">
+             <![CDATA[ and keywords like concat(concat('%',#{keywords}),'%')]]>
+         </if>
+         <if test="status !=null">
+           and status =#{status}
+         </if>
+       </where>
+       order by id DESC
+     </select>
+
+    <select id="queryCheckRepeat" resultType="com.feiniu.yx.page.entity.SearchWords" parameterType="com.feiniu.yx.page.entity.SearchWords">
+        <include refid="baseSql"></include>
+        <where>
+            <if test="keywords !=null">
+                and keywords =#{keywords}
+            </if>
+        </where>
+        order by id DESC
+    </select>
+     
+     <select id="findSearchWordsByID" parameterType="long" resultType="com.feiniu.yx.page.entity.SearchWords">
+      <include refid="baseSql"></include>
+      <where>
+       id =#{id}
+      </where>
+     </select>
+
+    <insert id="insertSearchWords"  parameterType="com.feiniu.yx.page.entity.SearchWords" useGeneratedKeys="true" keyProperty="id">
+      insert into yx_cms_search_words(keywords,pool_id,status,create_id,update_id) values
+       (#{keywords},#{poolId},#{status},#{createId},#{updateId})
+    </insert>
+    
+    
+    <update id="updateSearchWords" parameterType="com.feiniu.yx.page.entity.SearchWords">
+      update yx_cms_search_words set keywords =#{keywords},pool_id =#{poolId},
+      status = #{status}, update_id = #{updateId}
+      <where>
+       id =#{id}
+      </where>
+    </update>
+    
+    <delete id="deleteSearchWords">
+     delete from yx_cms_search_words
+     <where>
+       id=#{id}
+     </where>
+    </delete>
+    </mapper>

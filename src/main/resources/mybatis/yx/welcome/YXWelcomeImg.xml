@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXWelcomeImg">
+ <sql id="selectSql">
+  select id,
+  		img_url imgUrl,
+  		img_size imgSize,
+  		btn_img_url btnImgUrl,
+  		btn_img_size btnImgSize,
+  		btn_custom_url btnCustomUrl,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_cms_welcome_img
+ </sql>
+
+ <insert id="insertBatchYXWelcomeImg" parameterType="list">
+   insert into yx_cms_welcome_img (welcome_id,img_url,img_size,
+    btn_img_url,btn_img_size,btn_custom_url,create_id,update_id)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+        (#{item.welcomeId},#{item.imgUrl},#{item.imgSize},#{item.btnImgUrl},
+        #{item.btnImgSize},#{item.btnCustomUrl},#{item.createId},#{item.updateId})
+    </foreach>
+
+ </insert>
+
+ <select id="selectYXWelcomeImgByWelcomeId" parameterType="long"  resultType="YXWelcomeImg">
+   <include refid="selectSql"></include>
+   <where>
+         and welcome_id=#{welcomeId}
+   </where>
+ </select>
+
+
+ <delete id="deleteYXWelcomeImgByWelcomeId">
+  delete from yx_cms_welcome_img where welcome_id=#{welcomeId}
+ </delete>
+
+
+ 
+</mapper>

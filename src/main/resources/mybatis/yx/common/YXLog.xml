@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXLog">
+	
+   <insert id="insertYXLog" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="YXLog">
+	insert into yx_cms_log(userId,trueName,clientIp,operationMsg,create_id,update_id,logtype,proto_id)
+				values(#{userId},#{trueName},#{clientIp},#{operationMsg},#{createId},#{updateId},#{logType},#{protoId})
+   </insert>
+   
+   <select id="selectYXLogs" parameterType="YXLog" resultType="YXLog">
+    	select id,
+        	   userId,
+        	   trueName,
+        	   clientIp,
+        	   operationTime,
+        	   logtype logType,
+        	   proto_id protoId,
+        	   operationMsg
+        	   from yx_cms_log
+    	<where>
+    		<if test="userId != null and  userId != ''">
+    			<![CDATA[  
+              		userId = #{userId}  
+            	]]>  
+    		</if>
+    		<if test="logType != null and  logType != ''">
+    			<![CDATA[  
+              		and logtype = #{logType}  
+            	]]>  
+    		</if>
+    		<if test="protoId != null and  protoId != ''">
+    			<![CDATA[  
+              		and proto_id = #{protoId}  
+            	]]>  
+    		</if>
+    		<if test="logBeginTime != null and  logBeginTime != ''">
+    			<![CDATA[  
+              		and operationTime >= #{logBeginTime}  
+            	]]>  
+    		</if>
+    		<if test="logEndTime != null and  logEndTime != ''">
+    			<![CDATA[  
+              		and operationTime <= #{logEndTime}  
+            	]]>  
+    		</if>
+    	</where>
+    </select>
+    
+    <delete id ="deleteLogs" parameterType="YXLog">
+    	delete from yx_cms_log  
+    			<![CDATA[  
+              		where operationTime <= #{operationTime}
+            	]]>  
+    </delete>
+  
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXStore">
+ <sql id="selectSql">
+  select id,
+  		name,
+ 	 	code,
+ 	 	pg_seq pgSeq,
+ 	 	status,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_cms_store
+ </sql>
+ 
+ <select id="selectAllStore" resultType="YXStore">
+     <include refid="selectSql"></include>
+     <where>
+      <![CDATA[  status <>1]]>  
+     </where>
+ </select>
+ 
+ <select id="selectStoreByCode" resultType="YXStore">
+  <include refid="selectSql"></include>
+  <where>
+     code =#{code}
+  </where>
+ </select>
+ 
+  <select id="selectStoreByPgSeq" resultType="YXStore">
+  <include refid="selectSql"></include>
+  <where>
+     <if test="_parameter  != null and _parameter != ''">
+      pg_seq =#{pgSeq}
+     </if>
+  </where>
+ </select>
+ 
+ <select id="selectYXStoreById" resultType="YXStore" parameterType="long">
+  <include refid="selectSql"></include>
+  <where>
+     id =#{id}
+  </where>
+ </select>
+ 
+ <select id="selectStoreByIds" resultType="YXStore" >
+  <include refid="selectSql"></include>
+  <where>
+     <![CDATA[  status <>1]]>    and 
+    id in  
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+       #{item}  
+    </foreach> 
+  </where>
+ </select>
+ 
+ <select id="selectStoreByCodes" resultType="YXStore" >
+  <include refid="selectSql"></include>
+  <where>
+     <![CDATA[  status <>1]]>    and 
+    code in  
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">  
+       #{item}  
+    </foreach> 
+  </where>
+ </select>
+ 
+ <select id="selectYXStoreByNameCode" resultType="YXStore" >
+  <include refid="selectSql"></include>
+  <where>
+  		<![CDATA[  status <>1]]> 
+		<if test="name != null and name != ''">
+   			<![CDATA[  
+             		and name like '%' #{name} '%'
+           	]]>  
+   		</if>
+   		<if test="code != null and  code != ''">
+   			<![CDATA[  
+             		and code = #{code}
+           	]]>  
+   		</if> 
+  </where>
+ </select>
+ 
+ <select id="selectYXStoreByNameOrCode" resultType="YXStore" >
+  <include refid="selectSql"></include>
+  <where>
+  		<![CDATA[  status <>1]]> 
+		<if test="name != null and name != ''">
+   			<![CDATA[  
+             		and (name like '%' #{name} '%' or code = #{name})
+           	]]>  
+   		</if>
+  </where>
+ </select>
+ 
+ <insert id="insertStoreBatch" parameterType="YXStore">
+   insert into yx_cms_store(name,code,status,pg_seq,pg_name,create_id,update_id)values
+   <foreach collection="list" item="item" index="index" separator =",">
+    (#{item.name},#{item.code},#{item.status},#{item.pgSeq},#{item.pgName},#{item.createId},#{item.updateId})   
+    </foreach>
+</insert>
+
+	<delete id="deleteStoreAll">
+      delete from yx_cms_store
+	</delete>
+ 
+</mapper>

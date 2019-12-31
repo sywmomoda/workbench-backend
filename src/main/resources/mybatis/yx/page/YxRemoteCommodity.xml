@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxRemoteCommodity">
+	<sql id="selectYxRemoteCommodity">
+		select id,
+        	   type,
+        	   store_code storeCode,
+        	   commodity_id commodityId,
+        	   category,
+        	   title,
+        	   promote_text promoteText,
+        	   pic_url picUrl,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_remote_commodity
+	</sql>
+
+    <select id="selectYxRemoteCommodityById" parameterType="long" resultType="YxRemoteCommodity">
+    	<include refid="selectYxRemoteCommodity"/>
+         where id = #{id} 
+    </select> 
+    
+    <select id="selectYxRemoteCommodityTypeAndCode" parameterType="YxRemoteCommodity" resultType="YxRemoteCommodity">
+    	<include refid="selectYxRemoteCommodity"/>
+    	 where type = #{type} and store_code = #{storeCode}
+    </select>
+    
+    <insert id="insertYxRemoteCommodityByBatch" parameterType="java.util.List">
+        insert into yx_cms_remote_commodity (type,store_code,commodity_id,category,title,promote_text,pic_url,create_id,create_time,update_id,update_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.type}, #{item.storeCode},#{item.commodityId},#{item.category},#{item.title},#{item.promoteText},#{item.picUrl},#{item.createId},#{item.createTime},#{item.updateId},#{item.updateTime})
+        </foreach>
+    </insert>
+    
+    <insert id="insertYxRemoteCommodity" parameterType="YxRemoteCommodity" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_remote_commodity(
+    	type,store_code,commodity_id,category,title,promote_text,pic_url,create_id,create_time,update_id,update_time) 
+    	values(
+    	#{type},#{storeCode},#{commodityId},#{category},#{title},#{promoteText},#{picUrl},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+    
+    <delete id="deleteYxRemoteCommodityById" parameterType="Long">
+   		delete from yx_cms_remote_commodity where id = #{id}
+   </delete>
+   
+   <delete id="deleteYxRemoteCommodityByTypeAndCode" parameterType="YxRemoteCommodity">
+   		delete from yx_cms_remote_commodity where type = #{type} and store_code = #{storeCode}
+   </delete>
+    
+</mapper>

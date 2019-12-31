@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolProperPlus">
+	<sql id="selectYxPoolProper">
+		select id,
+		store_code storeCode,
+		commodity_id commodityId,
+		commodity_proper commodityProper,
+		create_id createId,
+		update_id updateId,
+		create_time createTime,
+		update_time updateTime
+        from yx_cms_pool_proper_plus
+	</sql>
+   <insert id="batchInsertYxPoolProper" parameterType="YxPoolProperPlus" useGeneratedKeys="true" keyProperty="id">
+     insert into yx_cms_pool_proper_plus(store_code,commodity_id,
+     commodity_proper,create_id,update_id)values
+		<foreach collection="list" item="item" index="index" separator="," >
+		 (#{item.storeCode},#{item.commodityId},#{item.commodityProper},#{item.createId},#{item.updateId})
+		</foreach>
+   </insert>
+   
+   <insert id="insertYxPoolProper" parameterType="YxPoolProperPlus" useGeneratedKeys="true" keyProperty="id">
+     insert into yx_cms_pool_proper_plus(store_code,commodity_id,
+     commodity_proper,create_id,update_id)values
+    (#{storeCode},#{commodityId},#{commodityProper},#{createId},#{updateId})
+   </insert>
+    
+  <delete id="deleteYxPoolProper" parameterType="YxPoolProperPlus">
+   	  delete from yx_cms_pool_proper_plus where commodity_id =#{commodityId} and store_code=#{storeCode} 
+  </delete>  
+  
+  <update id="updateYxPoolProperCommodityId" parameterType="YxPoolProperPlus">
+     update  yx_cms_pool_proper_plus set commodity_id =#{commodityId} where id=#{id}
+  </update>
+    
+   <select id="selectYxPoolProperList" parameterType="long" resultType="YxPoolProperPlus">
+   <include refid="selectYxPoolProper"></include>
+   <where>
+      commodity_id = #{commodityId}
+   </where>
+   </select>
+   
+   <select id="selectYxPoolProperSingle" parameterType="YxPoolProperPlus" resultType="YxPoolProperPlus">
+   <include refid="selectYxPoolProper"></include>
+  	 <where>
+       <if test="commodityId !=null and commodityId !=''">
+        commodity_id = #{commodityId}
+       </if>
+       <if test="storeCode!=null and storeCode !=''">
+        and  store_code = #{storeCode}
+       </if>
+  	 </where>
+   </select>
+   
+   
+   <select id="selectYxPoolProperListByComoditys" parameterType="String" resultType="YxPoolProperPlus">
+   <include refid="selectYxPoolProper"></include>
+      where commodity_id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+   </select>
+   
+   <select id="selectYxPoolProperById" parameterType="long" resultType="YxPoolProperPlus">
+   <include refid="selectYxPoolProper"></include>
+   <where>
+      id = #{id}
+   </where>
+   </select>
+
+    <delete id="delYxPoolProperPlusByCommodityId" parameterType="String">
+        delete from yx_cms_pool_proper_plus where commodity_id = #{commodityId}
+    </delete>
+</mapper>

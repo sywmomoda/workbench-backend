@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ModuleMultiTab">
+	<sql id="selectModuleMultiTabOnline">
+		select id,
+        	   store_code storeCode,
+        	   module_id moduleId,
+        	   tab_name tabName,
+        	   begin_time beginTime,
+        	   end_time endTime,
+        	   content content,
+        	   content1 content1,
+        	   link_type linkType,
+        	   link_data linkData,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module_multi_tab_online
+	</sql>
+
+    <sql id="moduleMultiTabNameOnline">
+          yx_cms_module_multi_tab_online
+    </sql>
+
+    
+    <insert id="insertModuleMultiTabOnline" parameterType="ModuleMultiTab" useGeneratedKeys="true" keyProperty="id">
+    	insert into <include refid="moduleMultiTabNameOnline"></include>(id,
+        store_code,tab_name,begin_time,end_time,content, content1,module_id,
+    	link_type,link_data,create_id,create_time,update_id,update_time)
+        values
+        <foreach collection ="list" item="mt" separator =",">
+            (
+            #{mt.id},#{mt.storeCode},
+            #{mt.tabName},#{mt.beginTime},#{mt.endTime},#{mt.content},
+            #{mt.content1},#{mt.moduleId},
+            #{mt.linkType},#{mt.linkData},
+            #{mt.createId},
+            #{mt.createTime},
+            #{mt.updateId},
+            #{mt.updateTime})
+        </foreach >
+
+    </insert>
+
+    <delete id="deleteModuleMultiTabOnlineById" parameterType="Long">
+   		delete from <include refid="moduleMultiTabNameOnline"></include> where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+   </delete>
+    
+</mapper>

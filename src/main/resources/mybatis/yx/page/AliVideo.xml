@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="AliVideo">
+    <sql id="baseSql">
+     SElECT id,name,custom_url customUrl,note,status,
+     content_id contentId,
+     create_id createId,
+     create_time createTime,
+     update_id updateId,
+     update_time updateTime,
+     img_url imgUrl,
+     gif_url gifUrl
+     FROM yx_ali_video
+    
+    </sql>
+     <select id="list" resultType="AliVideo" parameterType="AliVideo">
+       <include refid="baseSql"></include>
+       <where>
+         <if test="id !=null">
+          and id = #{id}
+         </if>
+         <if test="name != null and name !=''">
+             <![CDATA[ and name like concat(concat('%',#{name}),'%')]]>
+         </if>
+         <if test="status !=null">
+           and status =#{status}
+         </if>
+       </where>
+       order by id DESC
+     </select>
+     
+     <select id="videoById" parameterType="long" resultType="AliVideo">
+      <include refid="baseSql"></include>
+      <where>
+       id =#{id}
+      </where>
+     </select>
+     
+     <select id="maxNum" resultType="Long">
+     SELECT Auto_increment max
+  			FROM information_schema.TABLES
+ 			WHERE  table_name= 'yx_ali_video' 
+     </select>
+    
+    <insert id="insertList"  parameterType="list" useGeneratedKeys="true" keyProperty="id">
+      insert into yx_ali_video(name,custom_url,note,status,content_id,create_id,update_id,img_url,gif_url) values
+      <foreach collection="list" item="item" index="index" separator=",">
+       (#{item.name},#{item.customUrl},#{item.note},#{item.status},#{item.contentId},#{item.createId},#{item.updateId},#{item.imgUrl},#{item.gifUrl})
+      </foreach>
+    </insert>
+    
+    <insert id="insert"  parameterType="AliVideo" useGeneratedKeys="true" keyProperty="id">
+      insert into yx_ali_video(name,custom_url,note,status,content_id,create_id,update_id,img_url,gif_url) values
+       (#{name},#{customUrl},#{note},#{status},#{contentId},#{createId},#{updateId},#{imgUrl},#{gifUrl})
+    </insert>
+    
+    
+    <update id="update" parameterType="AliVideo">
+      update yx_ali_video set name =#{name},custom_url =#{customUrl},note=#{note},content_id=#{contentId},
+      status = #{status}, update_id = #{updateId},img_url = #{imgUrl},gif_url = #{gifUrl}
+      <where>
+       id =#{id}
+      </where>
+    </update>
+    
+    <delete id="delete">
+     delete from yx_ali_video 
+     <where>
+       id=#{id}
+     </where>
+    </delete>
+    </mapper>

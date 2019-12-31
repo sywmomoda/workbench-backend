@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="B2BStoreGroup">
+ <sql id="selectSql">
+  select id,
+  		name,
+  		pg_seq pgSeq,
+  		store_id storeId,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from b2b_cms_store_group
+ </sql>
+ 
+ <select id="selectAllB2BStoreGroup" resultType="B2BStoreGroup">
+     <include refid="selectSql"></include>
+ </select>
+ 
+  <select id="selectB2BGroupStoreById" resultType="B2BStoreGroup" parameterType="long">
+     <include refid="selectSql"></include>
+     <where>
+      id=#{id}
+     </where>
+  </select>
+  
+  <select id="selectB2BStoreByStoreId" parameterType="B2BStore"  resultType="B2BStoreGroup">
+   <include refid="selectSql"></include>
+     <where>
+      store_id like #{code}
+     </where>
+  </select>
+  
+  <update id="updateB2BStoreGroup" parameterType="B2BStoreGroup">
+   update b2b_cms_store_group set name = #{name},store_id =#{storeId},pg_seq =#{pgSeq},
+   update_id =#{updateId},update_time = #{updateTime} where id=#{id}
+  </update>
+ 
+   <insert id="insertB2BStoreGroup" parameterType="B2BStoreGroup">
+   insert into b2b_cms_store_group(name,store_id,pg_seq,create_id,update_id,update_time)
+   values(#{name},#{storeId},#{pgSeq},#{createId},#{updateId},#{updateTime})   
+   </insert>
+   
+   <delete id="deleteB2BStoreGroupById" parameterType="long">
+     delete from b2b_cms_store_group  where id=#{id}
+   </delete>
+</mapper>

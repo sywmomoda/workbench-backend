@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ModuleProperPlus">
+	<sql id="selectModuleProperPlus">
+		select id,
+        	   module_id moduleId,
+        	   store_code storeCode,
+        	   module_proper moduleProper,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module_proper_plus
+	</sql>
+
+    <select id="selectModuleProperPlusByModuleId" parameterType="long" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlus"/>
+         where module_id = #{moduleId} 
+    </select> 
+    
+     <select id="selectModuleProperPlusById" parameterType="long" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlus"/>
+         where id = #{id} 
+    </select>
+    
+    <select id="selectModuleProperPlusByModuleIdAndStoreCode" parameterType="ModuleProperPlus" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlus"/>
+         where module_id = #{moduleId} and store_code = #{storeCode};
+    </select> 
+    
+    <select id="selectModuleProperPlusByIds" parameterType="String" resultType="ModuleProperPlus">
+    	<include refid="selectModuleProperPlus"/>
+    	 where id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+    
+    <insert id="insertModuleProperPlus" parameterType="ModuleProperPlus" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_module_proper_plus(
+    	module_id,store_code,module_proper,
+    	create_id,create_time,update_id,update_time) 
+    	values(
+    	#{moduleId},#{storeCode},#{moduleProper},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+    
+    <update id="updateModuleProperPlus" parameterType="ModuleProperPlus">
+    	update yx_cms_module_proper_plus set 
+    	module_id=#{moduleId},
+    	store_code=#{storeCode},
+    	module_proper=#{moduleProper},
+    	update_id=#{updateId},
+    	update_time=#{updateTime}
+    	where id=#{id}
+    </update>
+    
+    <delete id="deleteModuleProperPlusById" parameterType="Long">
+   		delete from yx_cms_module_proper_plus where id = #{id}
+   </delete>
+   
+   <delete id="deleteModuleProperPlusByModuleId" parameterType="long">
+   		delete from yx_cms_module_proper_plus where module_id = #{moduleId}
+   </delete>
+    
+</mapper>

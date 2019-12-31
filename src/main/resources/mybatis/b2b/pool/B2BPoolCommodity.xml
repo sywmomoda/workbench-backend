@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="B2BPoolCommodity">
+	<sql id="selectB2BPoolCommodity">
+		select id,
+        	   commodity_id commodityId,
+        	   title,
+        	   pic_url picUrl,
+        	   pic_turnurl picTurnUrl,
+        	   sell_point sellPoint,
+        	   periods,
+        	   url_type urlType,
+        	   custom_url customUrl,
+        	   promote_text promoteText,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   originate originate,
+        	   url_properties urlProperties,
+        	   class_id classId,
+        	   store_codes storeCodes,
+        	   group_ids groupIds,
+        	   coupon_properties couponProperties,
+        	   description description,
+        	   remark
+        	   from yx_cms_pool_commodity
+	</sql>
+
+    <select id="selectB2BPoolCommodityById" parameterType="long" resultType="B2BPoolCommodity">
+    	<include refid="selectB2BPoolCommodity"/>
+         where id = #{id} 
+    </select> 
+
+    <insert id="insertB2BPoolCommodity" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="B2BPoolCommodity">
+		insert into yx_cms_pool_commodity ( commodity_id, title ,
+		pic_url ,pic_turnurl ,
+		sell_point , periods , url_type , custom_url ,
+		promote_text , update_id , create_id,originate,url_properties,class_id,store_codes,group_ids,coupon_properties,description,remark )
+		values (
+		#{commodityId},#{title},#{picUrl},#{picTurnUrl},#{sellPoint},#{periods},#{urlType},#{customUrl},
+		<choose>
+			<when test="promoteText !=null and promoteText!=''">#{promoteText}</when>
+			<otherwise>''</otherwise>
+		</choose>
+		,#{updateId},#{createId},#{originate},#{urlProperties},#{classId},#{storeCodes},#{groupIds},
+		<choose>
+		<when test="couponProperties != null and couponProperties !=''">#{couponProperties}</when>
+		<otherwise>''</otherwise>
+		</choose>,#{description},#{remark}
+		)
+	</insert>
+    
+    <update id="updateB2BPoolCommodity" parameterType="B2BPoolCommodity">
+		update yx_cms_pool_commodity set
+		commodity_id = #{commodityId},
+		title = #{title},
+		pic_url = #{picUrl},
+		sell_point = #{sellPoint},
+		periods = #{periods},
+		url_type = #{urlType},
+		custom_url = #{customUrl},
+		<choose>
+			<when test="promoteText !=null and promoteText!=''">promote_text = #{promoteText}, </when>
+			<otherwise>promote_text = '', </otherwise>
+		</choose>
+		update_id = #{updateId},
+		originate = #{originate},
+		class_id = #{classId},
+		store_codes=#{storeCodes},
+		description=#{description},
+		remark=#{remark}
+		where id = #{id}    
+    </update>
+    
+    <update id="updateB2BPoolCommodityFromPool" parameterType="B2BPoolCommodity">
+		update yx_cms_pool_commodity set
+		title= #{title},
+		promote_text = #{promoteText},
+		url_type = #{urlType},
+		custom_url = #{customUrl},
+		pic_turnurl = #{picTurnUrl},
+		sell_point = #{sellPoint},
+		update_id = #{updateId},
+		description=#{description},
+		url_properties=#{urlProperties},
+		originate=#{originate},
+		remark=#{remark}
+		where id = #{id}    
+    </update>
+  <update id="updateB2BPoolPicCommodityFromPool" parameterType="B2BPoolCommodity">
+		update yx_cms_pool_commodity set
+		title= #{title},
+		url_type = #{urlType},
+		url_properties = #{urlProperties},
+		pic_url = #{picUrl},
+		pic_turnurl = #{picTurnUrl},
+		update_id = #{updateId},
+		coupon_properties=#{couponProperties},
+		promote_text =#{promoteText},
+		description =#{description},
+		remark =#{remark}
+		where id = #{id}    
+    </update>
+    
+    <select id="selectB2BPoolCommodityByIds" parameterType="String" resultType="B2BPoolCommodity">
+    	<include refid="selectB2BPoolCommodity"/>where id in
+    	<foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+   
+   <select id="selectB2BPoolCommodityByCommodityIdAndPeriodId" parameterType="map" resultType="B2BPoolCommodity">
+   		<include refid="selectB2BPoolCommodity"/>where commodity_id = #{commodityId} and periods = #{periodId}
+   </select>
+   
+   <delete id="deleteB2BPoolCommodityById" parameterType="String">
+   		delete from yx_cms_pool_commodity where id = #{id}
+   </delete>
+</mapper>

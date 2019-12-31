@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolPeriodsStore">
+	<sql id="selectYxPoolPeriodsStore">
+		select id,
+        	   yx_cms_pool_period_id periodId,
+        	   store_code storeCode,
+        	   commoditys,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_pool_periods_store
+	</sql>
+	
+    <select id="selectYxPoolPeriodsStoreByStoreCode" parameterType="map" resultType="YxPoolPeriodsStore">
+    	<include refid="selectYxPoolPeriodsStore"/>
+         where yx_cms_pool_period_id = #{periodsId} and store_code = #{storeCode}  
+    </select>
+    
+    <select id="selectPoolPeriodsStoreByStoreCodesAndPeriodsId" parameterType="map" resultType="YxPoolPeriodsStore">
+    	<include refid="selectYxPoolPeriodsStore"/>
+         where yx_cms_pool_period_id = #{periodsId} and store_code in 
+         <foreach collection="storeCodes" index="index" item="code" open="(" separator="," close=")">
+          	#{code}
+	     </foreach> 
+    </select>  
+    
+    <select id="selectYxPoolPeriodsStoreByPeriodsId" parameterType="Long" resultType="YxPoolPeriodsStore">
+    	<include refid="selectYxPoolPeriodsStore"/>
+         where yx_cms_pool_period_id = #{periodsId} 
+    </select>
+    
+    <select id="selectYxPoolPeriodsStoreList" parameterType="YxPoolPeriodsStore" resultType="YxPoolPeriodsStore">   
+        <include refid="selectYxPoolPeriodsStore"/>        
+        <where>   
+        <if test="id != null and id > 0L">
+         and id=#{id}
+        </if>
+        <if test="periodId != null and periodId >0L">
+         and yx_cms_pool_period_id =#{periodId}
+        </if>
+        <if test="storeCode != null and storeCode != ''">
+        and store_code = #{storeCode}
+        </if>
+        </where>
+    </select>
+    
+    <insert id="insertYxPoolPeriodsStore" parameterType="YxPoolPeriodsStore" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_pool_periods_store(yx_cms_pool_period_id,store_code,commoditys,create_id,create_time) 
+    	values(#{periodId},#{storeCode},#{commoditys},#{createId},#{createTime})
+    </insert>
+    
+    <update id="updateYxPoolPeriodsStoreCommoditys" parameterType="YxPoolPeriodsStore">
+      update yx_cms_pool_periods_store set commoditys= #{commoditys}, update_time = #{updateTime}, update_id = #{updateId} where id = #{id}
+    </update>
+    <update id="updateYxPoolPeriodsStore" parameterType="YxPoolPeriodsStore">
+      update yx_cms_pool_periods_store set update_time = #{updateTime}, update_id = #{updateId} where id = #{id}
+    </update>
+    
+    <delete id="deleteYxPoolPeriodsStore" parameterType="long">
+      delete from yx_cms_pool_periods_store  where id=#{id}
+    </delete>
+
+    <delete id="delPoolPeriodsStore" parameterType="long">
+        delete from yx_cms_pool_periods_store where id=#{id}
+    </delete>
+
+    <select id="findPeriodsStoreByOld" parameterType="long" resultType="YxPoolPeriodsStore">
+        <include refid="selectYxPoolPeriodsStore"/>
+        where yx_cms_pool_period_id=#{id}
+    </select>
+
+    <insert id="addyxPoolPeriodsStore" parameterType="YxPoolPeriodsStore">
+        insert into yx_cms_pool_periods_store(yx_cms_pool_period_id,store_code,commoditys,create_id,create_time)
+    	values(#{periodId},#{storeCode},#{commoditys},#{createId},#{createTime})
+    </insert>
+</mapper>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- 激活组件扫描功能,在包及其子包下面自动扫描通过注解配置的组件 -->
+	<!--<context:component-scan base-packaonge="com.feiniu, com.flygear.job.executor.service.jobhandler,com.feiniu.b2b.core.jobhandler"></context:component-scan>-->
+	<context:component-scan base-package="com.feiniu"></context:component-scan>
+
+	<!-- spring的属性加载器，加载properties文件中的属性 -->
+	<bean id="propertyConfigurer"
+		  class="com.feiniu.yx.config.PropertyPlaceholderConfigurerEx">
+		<property name="locations">
+			<list>
+				<!-- local -->
+				<!--<value>file:D:\config\svn\cms\cmsbackend-yx\pro.properties</value>-->
+				<value>file:E:\cmsbackend-yx\src\main\resources\pro.properties</value>
+				<value>file:E:\cmsbackend-yx\src\main\resources\sso.properties</value>
+				<!-- beta&preview&online -->
+				<!--<value>file:/home/webdata/cmsbackend-yx/webroot/config/pro.properties</value>-->
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="fileEncoding" value="utf-8" />
+	</bean>
+
+	<bean id="ssoAuth" class="com.feiniu.ssoutil.SsoAuth">
+		<constructor-arg index="0" value="${portal.sso.env}"></constructor-arg>
+	</bean>
+
+	<bean id="dynamicDataSource" name="b2bDataSource"  class="com.alibaba.druid.pool.DruidDataSource"  init-method="init"  destroy-method="close">
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${mysql.jdbc.url}" />
+		<property name="username" value="${mysql.jdbc.user}" />
+		<property name="password" value="${mysql.jdbc.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${mysql.jdbc.initialSize}" />
+		<property name="minIdle" value="${mysql.jdbc.minIdle}" />
+		<property name="maxActive" value="${mysql.jdbc.maxActive}" />
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value="mysql.jdbc.validationQuery" />
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小 mysql false -->
+		<property name="poolPreparedStatements" value="false" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		<!-- 配置监控统计拦截的filters -->
+		<property name="filters" value="slf4j" />
+		<property name="connectionProperties" value="config.decrypt=false" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dynamicDataSource" />
+		<property name="configLocation" value="classpath:configuration.xml" />
+		<property name="configurationProperties">
+			<props>
+				<!-- 这个配置使全局的映射器启用或禁用缓存 -->
+				<prop key="cacheEnabled">true</prop>
+				<!-- 全局启用或禁用延迟加载。当禁用时，所有关联对象都会即时加载。 -->
+				<prop key="lazyLoadingEnabled">false</prop>
+				<prop key="aggressiveLazyLoading">true</prop>
+			</props>
+		</property>
+
+
+	</bean>
+
+
+	<!--*******************************分割线***************************** -->
+	<!--测试mybatis generator 测试测试测试测试	-->
+	<!--DAO接口所在包名，Spring会自动寻找其下的类-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.feiniu.yx.welcome.dao"></property>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	<!--******************************分割线****************************** -->
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<!-- 图片服务 应用配置-->
+	<bean id="fsfApplication" class="com.feiniu.fsf.core.FsfApplication">
+		<property name="application" value="feiniu-imageservice-consumer1"/>
+	</bean>
+
+	<!-- 图片服务 注册中心配置 -->
+	<bean id="fsfRegister" class="com.feiniu.fsf.register.FsfRegister">
+		<property name="register" value="${cms.img.zk}"/>
+	</bean>
+
+	<bean id="imageService" class="com.feiniu.fsf.rpc.proxy.ClientProxyBean">
+		<property name="serviceInterface" value="com.feiniu.image.service.ImageService"/>
+		<property name="serviceName" value="feiniuImageService"/>
+	</bean>
+
+	<bean id="threadPoolTaskExecutor"
+		  class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="15" />
+		<property name="queueCapacity" value="100" />
+	</bean>
+
+	<!--类目同步连接池配置-->
+	<bean id="sysnCategoryThreadPoolTaskExecutor"
+		  class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="100" />
+	</bean>
+
+	<!--连接池配置-->
+	<bean id="cachePool" class="com.fn.cache.client.pool.CachePool">
+		<property name="cacheCloudAddress" value="${cache.cloudAddress}"/>
+		<property name="appName" value="${cache.appName}"/>
+		<!--连接池属性配置  可选-->
+		<!--如果赋值为-1，则表示不限制；如果pool已经分配了maxConn个jedis实例，则此时pool的状态为exhausted(耗尽)-->
+		<property name="maxConn" value="${cache.maxConn}"/>
+		<!--控制一个pool最多有多少个状态为idle(空闲的)的jedis实例-->
+		<property name="minConn" value="${cache.minConn}"/>
+		<!--连接socket超时默认2(秒),属性单位毫秒-->
+		<property name="maxWait" value="2000"/>
+		<!--获取连接最大超时时间,属性单位毫秒-->
+		<property name="connectionTimeout" value="2000"/>
+		<!--设置单机模式连接池方式(0：旧模式，1：连接池模式,2: redis-sentinel)-->
+		<property name="standAloneModel" value="1"/>
+		<!--失败重试次数,默认2次-->
+		<property name="maxRedirections" value="2"/>
+	</bean>
+
+	<!--cache客户端实例-->
+	<bean id="cacheClient" class="com.fn.cache.client.RedisCacheClient" init-method="init">
+		<!--缓存连接池-->
+		<property name="cachePool" ref="cachePool"/>
+	</bean>
+
+	<!-- 定时任务 配置02、执行器 -->
+	<bean id="flyGearJobExecutor" class="com.flygear.job.client.executor.FlyGearJobExecutor" init-method="start" destroy-method="destroy" >
+		<!-- 执行器注册中心地址[选填]，为空则关闭自动注册 -->
+		<property name="adminAddresses" value="${job.executor.adminAddresses}" />
+		<!-- 执行器AppName[选填]，为空则关闭自动注册 -->
+		<property name="appName" value="${job.executor.appName}" />
+		<!-- 执行器IP[选填]，为空则自动获取 -->
+		<property name="ip" value="" />
+		<!-- 执行器端口号[选填]，为空则自动获取 -->
+		<property name="port" value="9010" />
+		<!-- 访问令牌[选填]，非空则进行匹配校验 -->
+		<property name="accessToken" value="" />
+		<!-- 执行器日志路径[选填]，为空则使用默认路径 -->
+		<!--<property name="logPath" value="/home/webdata/flygear/applogs/jobhandler" />-->
+		<property name="logPath" value="D:\feiniuoswelcomelog" />
+		<!-- 日志保存天数[选填]，值大于3时生效 -->
+		<property name="logRetentionDays" value="10" />
+	</bean>
+
+</beans>

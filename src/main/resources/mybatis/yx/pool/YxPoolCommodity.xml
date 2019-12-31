@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolCommodity">
+	<sql id="selectYxPoolCommodity">
+		select id,
+        	   commodity_id commodityId,
+        	   title,
+        	   pic_url picUrl,
+        	   pic_turnurl picTurnUrl,
+        	   sell_point sellPoint,
+        	   periods,
+        	   url_type urlType,
+        	   custom_url customUrl,
+        	   promote_text promoteText,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   originate originate,
+        	   url_properties urlProperties,
+        	   class_id classId,
+        	   store_codes storeCodes,
+        	   group_ids groupIds,
+        	   coupon_properties couponProperties,
+        	   description description,
+        	   remark,
+        	   add_on_date addOnDate
+        	   from yx_cms_pool_commodity
+	</sql>
+
+    <select id="selectYxPoolCommodityById" parameterType="long" resultType="YxPoolCommodity">
+    	<include refid="selectYxPoolCommodity"/>
+         where id = #{id} 
+    </select> 
+
+    <insert id="insertYxPoolCommodity" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="YxPoolCommodity">
+		insert into yx_cms_pool_commodity ( commodity_id, title ,
+		pic_url ,pic_turnurl ,
+		sell_point , periods , url_type , custom_url ,
+		promote_text , update_id , create_id,originate,url_properties,class_id,store_codes,group_ids,coupon_properties,description,remark,add_on_date )
+		values (
+		#{commodityId},#{title},#{picUrl},#{picTurnUrl},#{sellPoint},#{periods},#{urlType},#{customUrl},
+		<choose>
+			<when test="promoteText !=null and promoteText!=''">#{promoteText}</when>
+			<otherwise>''</otherwise>
+		</choose>
+		,#{updateId},#{createId},#{originate},#{urlProperties},#{classId},#{storeCodes},#{groupIds},
+		<choose>
+		<when test="couponProperties != null and couponProperties !=''">#{couponProperties}</when>
+		<otherwise>''</otherwise>
+		</choose>,#{description},#{remark},#{addOnDate}
+		)
+	</insert>
+
+    <update id="updateStoreAndGroupIdsOfYxPoolCommodity">
+       update yx_cms_pool_commodity set
+       store_codes = #{storeCodes},
+       group_ids =#{groupIds}
+       where id = #{id}
+    </update>
+    <update id="updateYxPoolCommodity" parameterType="YxPoolCommodity">
+		update yx_cms_pool_commodity set
+		commodity_id = #{commodityId},
+		title = #{title},
+		pic_url = #{picUrl},
+		sell_point = #{sellPoint},
+		periods = #{periods},
+		url_type = #{urlType},
+		custom_url = #{customUrl},
+		<choose>
+			<when test="promoteText !=null and promoteText!=''">promote_text = #{promoteText}, </when>
+			<otherwise>promote_text = '', </otherwise>
+		</choose>
+		update_id = #{updateId},
+		originate = #{originate},
+		class_id = #{classId},
+		store_codes=#{storeCodes},
+		description=#{description},
+		remark=#{remark}
+		where id = #{id}    
+    </update>
+    
+    <update id="updateYxPoolCommodityFromPool" parameterType="YxPoolCommodity">
+		update yx_cms_pool_commodity set
+		title= #{title},
+		promote_text = #{promoteText},
+		url_type = #{urlType},
+		custom_url = #{customUrl},
+		pic_turnurl = #{picTurnUrl},
+		sell_point = #{sellPoint},
+		update_id = #{updateId},
+		description=#{description},
+		url_properties=#{urlProperties},
+		originate=#{originate},
+		remark=#{remark},
+		update_time = #{updateTime},
+		add_on_date = #{addOnDate}
+		where id = #{id}    
+    </update>
+  <update id="updateYxPoolPicCommodityFromPool" parameterType="YxPoolCommodity">
+		update yx_cms_pool_commodity set
+		title= #{title},
+		url_type = #{urlType},
+		url_properties = #{urlProperties},
+		pic_url = #{picUrl},
+		pic_turnurl = #{picTurnUrl},
+		commodity_id = #{commodityId},
+		sell_point = #{sellPoint},
+		update_id = #{updateId},
+		coupon_properties=#{couponProperties},
+		promote_text =#{promoteText},
+		description =#{description},
+		remark =#{remark}
+		where id = #{id}    
+    </update>
+    
+    <select id="selectYxPoolCommodityByIds" parameterType="String" resultType="YxPoolCommodity">
+    	<include refid="selectYxPoolCommodity"/>where id in
+    	<foreach item="id" collection="array" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+   
+   <select id="selectYxPoolCommodityByCommodityIdAndPeriodId" parameterType="map" resultType="YxPoolCommodity">
+   		<include refid="selectYxPoolCommodity"/>where commodity_id = #{commodityId} and periods = #{periodId}
+   </select>
+   
+   <delete id="deleteYxPoolCommodityById" parameterType="String">
+   		delete from yx_cms_pool_commodity where id = #{id}
+   </delete>
+
+	
+</mapper>

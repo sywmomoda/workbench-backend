@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC  
+    "-//mybatis.org//DTD Config 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration> 
+	<typeAliases> 
+		<typeAlias alias="YXStore" type="com.feiniu.yx.store.entity.YXStore" />
+		<typeAlias alias="YXStoreGroup" type="com.feiniu.yx.store.entity.YXStoreGroup" />
+		<typeAlias alias="YxPool" type="com.feiniu.yx.pool.entity.YxPool" />
+		<typeAlias alias="YxPoolPeriods" type="com.feiniu.yx.pool.entity.YxPoolPeriods" />
+		<typeAlias alias="YxPoolCommodity" type="com.feiniu.yx.pool.entity.YxPoolCommodity" />
+		<typeAlias alias="YxPoolPeriodsStore" type="com.feiniu.yx.pool.entity.YxPoolPeriodsStore" />
+		<typeAlias alias="YXTemplate" type="com.feiniu.yx.template.entity.YXTemplate" />
+		<typeAlias alias="YXModuleType" type="com.feiniu.yx.template.entity.YXModuleType" />
+		<typeAlias alias="Module" type="com.feiniu.yx.page.entity.Module" />
+		<typeAlias alias="Page" type="com.feiniu.yx.page.entity.Page" />
+		<typeAlias alias="YxCategory" type="com.feiniu.yx.pool.entity.YxCategory" />
+		<typeAlias alias="Res" type="com.feiniu.yx.common.entity.Res" />
+		<typeAlias alias="YXWelcome" type="com.feiniu.yx.welcome.entity.YXWelcome" />
+		<typeAlias alias="YXWelcomeImg" type="com.feiniu.yx.welcome.entity.YXWelcomeImg" />
+        <typeAlias alias="OsWelcome" type="com.feiniu.yx.welcome.entity.OsWelcome" />
+        <typeAlias alias="OsWelcomeImg" type="com.feiniu.yx.welcome.entity.OsWelcomeImg" />
+		<typeAlias alias="YXLog" type="com.feiniu.yx.common.entity.YXLog" />
+		<typeAlias alias="B2BStore" type="com.feiniu.b2b.store.entity.B2BStore" />
+		<typeAlias alias="B2BStoreGroup" type="com.feiniu.b2b.store.entity.B2BStoreGroup" />
+        <typeAlias alias="B2BPoolCommodity" type="com.feiniu.b2b.pool.entity.B2BPoolCommodity" />
+        <typeAlias alias="B2BCategory" type="com.feiniu.b2b.pool.entity.B2BCategory" />
+        <typeAlias alias="ModuleProperPlus" type="com.feiniu.yx.page.entity.ModuleProperPlus" />
+        <typeAlias alias="YxRemoteCommodity" type="com.feiniu.yx.page.entity.YxRemoteCommodity" />
+        <typeAlias alias="YxCommodityRepeatCtl" type="com.feiniu.yx.page.entity.YxCommodityRepeatCtl" />
+        <typeAlias alias="YxPoolProperPlus" type="com.feiniu.yx.pool.entity.YxPoolProperPlus" />
+        <typeAlias alias="YXCouponShare" type="com.feiniu.yx.share.entiry.YXCouponShare" />
+        <typeAlias alias="BpPage" type="com.feiniu.bp.page.entity.BpPage" />
+        <typeAlias alias="BpContent" type="com.feiniu.bp.page.entity.BpContent" />
+        <typeAlias alias="AliVideo" type="com.feiniu.yx.page.entity.AliVideo"/>
+        <typeAlias alias="SearchWords" type="com.feiniu.yx.page.entity.SearchWords"/>
+        <typeAlias alias="B2BCouponShare" type="com.feiniu.b2b.share.entiry.B2BCouponShare" />
+        <typeAlias alias="ModuleMultiTab" type="com.feiniu.yx.page.entity.ModuleMultiTab" />
+    </typeAliases> 
+    <plugins>
+        <plugin interceptor="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+            <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins>
+    
+    <mappers> 
+        <mapper resource="mybatis/yx/store/YXStore.xml" /> 
+        <mapper resource="mybatis/yx/store/YXStoreGroup.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPool.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolOnline.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolCommodity.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolCommodityOnline.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolPeriods.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolPeriodsOnline.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolPeriodsStore.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolPeriodsStoreOnline.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxCategory.xml" /> 
+        <mapper resource="mybatis/yx/template/YXTemplate.xml" /> 
+        <mapper resource="mybatis/yx/template/YXModuleType.xml" />
+        <mapper resource="mybatis/yx/page/Module.xml" />
+        <mapper resource="mybatis/yx/page/ModuleProperPlus.xml" />
+		<mapper resource="mybatis/yx/page/ModuleProperPlusOnline.xml" />
+        <mapper resource="mybatis/yx/page/YxRemoteCommodity.xml" />
+        <mapper resource="mybatis/yx/page/YxCommodityRepeatCtl.xml" />
+        <mapper resource="mybatis/yx/page/Page.xml" />
+        <mapper resource="mybatis/yx/page/PageOnline.xml" />  
+        <mapper resource="mybatis/yx/page/ModuleOnline.xml" />
+        <mapper resource="mybatis/yx/common/res.xml" />
+        <mapper resource="mybatis/yx/welcome/YXWelcome.xml" />
+        <mapper resource="mybatis/yx/welcome/YXWelcomeImg.xml" />
+        <mapper resource="mybatis/yx/common/YXLog.xml" />
+        <mapper resource="mybatis/b2b/store/B2BStore.xml" /> 
+        <mapper resource="mybatis/b2b/store/B2BStoreGroup.xml" /> 
+        <mapper resource="mybatis/b2b/pool/B2BPoolCommodity.xml" /> 
+        <mapper resource="mybatis/b2b/pool/B2BCategory.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolProperPlus.xml" /> 
+        <mapper resource="mybatis/yx/pool/YxPoolProperPlusOnline.xml" /> 
+        <mapper resource="mybatis/yx/couponshare/YXCouponShare.xml" /> 
+        <mapper resource="mybatis/bp/page/BpPage.xml" /> 
+        <mapper resource="mybatis/bp/page/BpContent.xml" /> 
+        <mapper resource="mybatis/yx/page/AliVideo.xml"/>
+        <mapper resource="mybatis/yx/page/SearchWords.xml"/>
+        <mapper resource="mybatis/b2b/couponshare/B2BCouponShare.xml" />
+        <mapper resource="mybatis/yx/welcome/OsWelcome.xml" />
+        <mapper resource="mybatis/yx/welcome/OsWelcomeImg.xml" />
+        <mapper resource="mybatis/yx/page/ModuleMultiTab.xml" />
+        <mapper resource="mybatis/yx/page/ModuleMultiTabOnline.xml" />
+
+        <!--******上分割线***********-->
+        <!--*******测试mybatis generator-->
+        <mapper resource="mybatis/yx/welcome/test/OsWelcomeDAOTest.xml" />
+        <!--*********下分割线******-->
+
+    </mappers>
+</configuration>

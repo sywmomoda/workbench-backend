@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPool">
+	<sql id="selectYxPoolOnline">
+		select id,
+        	   name,
+        	   current_periods currentPeriods,
+        	   is_replace isReplace,
+        	   order_type orderType,
+        	   order_rule orderRule,
+        	   remark,
+        	   administrator,
+        	   stock_ft stockFt,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_pool_online
+	</sql>
+
+    <select id="selectYxPoolOnlineById" parameterType="long" resultType="YxPool">
+    	<include refid="selectYxPoolOnline"/>
+         where id = #{id} 
+    </select> 
+
+    <insert id="insertYxPoolOnline" parameterType="YxPool" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_pool_online(id,
+    	name,
+    	current_periods,
+    	is_replace,
+    	stock_ft,
+    	order_type,
+    	order_rule,
+    	remark,
+    	type,
+    	administrator,
+    	create_id,
+    	create_time,
+    	update_id,
+    	update_time) 
+    	values(
+    	#{id},
+    	#{name},
+    	#{currentPeriods},
+    	#{isReplace},
+    	#{stockFt},
+    	#{orderType},
+    	#{orderRule},
+    	#{remark},
+    	#{type},
+    	<choose>
+			<when test="administrator !=null and administrator!=''">#{administrator}</when>
+			<otherwise>''</otherwise>
+		</choose>,
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime})
+    </insert>
+    
+    <update id="updateYxPoolOnline" parameterType="YxPool">
+    	update yx_cms_pool_online set 
+    	name=#{name},
+    	current_periods=#{currentPeriods},
+    	is_replace=#{isReplace},
+    	order_type=#{orderType},
+    	stock_ft=#{stockFt},
+    	order_rule=#{orderRule},
+    	remark=#{remark},
+    	administrator=#{administrator},
+    	update_id=#{updateId},
+    	update_time=#{updateTime} 
+    	where id=#{id}
+    </update>
+    
+    <delete id="deleteOnlYxPoolById" parameterType="long">
+    	delete from yx_cms_pool_online where id = #{id}
+    </delete>
+</mapper>

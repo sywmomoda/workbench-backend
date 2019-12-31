@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolPeriodsStore">
+	<sql id="selectYxPoolPeriodsStoreOnline">
+		select id,
+        	   yx_cms_pool_period_id periodId,
+        	   store_code storeCode,
+        	   commoditys,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_pool_periods_store_online
+	</sql>
+    <select id="selectYxPoolPeriodsStoreOnlineById" parameterType="long" resultType="YxPoolPeriodsStore">
+    	<include refid="selectYxPoolPeriodsStoreOnline"/>
+         where id = #{id}  
+    </select> 
+
+     <delete id="deleteYxPoolPeriodsStoreOnlineByPeriodId" parameterType="Long">
+     delete from yx_cms_pool_periods_store_online where yx_cms_pool_period_id =#{id}
+    </delete>
+    
+       <insert id="insertBatchYxPoolPeriodsStoreOnline" parameterType="list">
+        insert into yx_cms_pool_periods_store_online(id,yx_cms_pool_period_id,store_code,update_time, update_id,create_id, 
+        create_time,commoditys)values        
+      <foreach collection ="list" item ="item" index ="index" separator =","> 
+       (#{item.id},#{item.periodId},#{item.storeCode},#{item.updateTime},#{item.updateId},
+       #{item.createId},#{item.createTime},#{item.commoditys}) 
+      </foreach>
+    </insert>
+    
+      <select id="selectYxPoolPeriodsStoreOnlineList" parameterType="YxPoolPeriodsStore" resultType="YxPoolPeriodsStore">   
+        <include refid="selectYxPoolPeriodsStoreOnline"/>        
+        <where>   
+        <if test="id != null and id > 0L">
+         and id=#{id}
+        </if>
+        <if test="periodId != null and periodId >0L">
+         and yx_cms_pool_period_id =#{periodId}
+        </if>
+        <if test="storeCode != null and storeCode != ''">
+        and store_code = #{storeCode}
+        </if>
+        </where>
+    </select>
+    
+    <update id="updateYxPoolPeriodsStoreOnline" parameterType="YxPoolPeriodsStore">
+      update yx_cms_pool_periods_store_online set commoditys= #{commoditys}, update_time = #{updateTime}, update_id = #{updateId} where id = #{id}
+    </update>
+    
+    <select id="selectOnlYxPoolPeriodsStoreByPeriodsId" parameterType="Long" resultType="YxPoolPeriodsStore">
+    	<include refid="selectYxPoolPeriodsStoreOnline"/>
+         where yx_cms_pool_period_id = #{periodsId} 
+    </select>
+    
+    <delete id="deleteYxPoolPeriodsStoreOnline" parameterType="Long">
+     delete from yx_cms_pool_periods_store_online where id =#{id}
+    </delete>
+
+    <delete id="delPoolPeriodsStoreOnline" parameterType="long">
+        delete from yx_cms_pool_periods_store_online where id=#{id}
+    </delete>
+</mapper>

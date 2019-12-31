@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXCouponShare">
+	<sql id="selectCouponShare">
+		select id,
+        	   name,
+        	   title,
+        	   begin_time beginTime,
+        	   end_time endTime,
+        	   status,
+        	   page_properties pageProperties,
+        	   coupon_properties couponProperties,
+        	   rule_properties ruleProperties,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   type
+        	   from yx_cms_coupon_share
+	</sql>
+
+    <select id="selectCouponShareById" resultType="YXCouponShare">
+     <include refid="selectCouponShare"></include>
+     <where>
+      id  = #{id}
+     </where>
+    </select>
+    <select id="queryCouponShareList" resultType="YXCouponShare" parameterType="YXCouponShare">
+     	<include refid="selectCouponShare"></include>
+     	<where>
+     	 <if test="id != null and id != ''">
+     	   id  = #{id}
+     	 </if>
+     	 <if test="name != null and name != ''">
+     	   and name like  CONCAT(CONCAT('%',#{name}),'%')
+     	 </if>
+     	 <if test="status != null">
+     	      <if test="status == 0">
+     	       <![CDATA[ and NOW()  >= end_time  ]]>
+     	       <![CDATA[ and status <> 3]]>
+     	      </if>
+     	      <if test="status == 1">
+     	       <![CDATA[ and DATE_FORMAT(begin_time, '%Y-%m-%d %h:%i:%s') <=  DATE_FORMAT(NOW(), '%Y-%m-%d %h:%i:%s')   ]]>
+     	       <![CDATA[ and DATE_FORMAT(end_time, '%Y-%m-%d %h:%i:%s') >=  DATE_FORMAT(NOW(), '%Y-%m-%d %h:%i:%s')   ]]>
+     	        <![CDATA[ and status <> 3]]>
+     	      </if>
+     	      <if test="status == 2">
+     	       <![CDATA[ and begin_time> NOW()]]>
+     	        <![CDATA[ and status <> 3]]>
+     	      </if>
+     	      <if test="status==3">
+     	        and status = 3
+     	      </if>
+     	 </if>
+     	 <if test="type != null and type != '' ">
+
+     	 </if>
+            <choose>
+                <when test="type != null and type != ''">
+                    and type =#{type}
+                </when>
+                <otherwise>
+                    <![CDATA[ and type <> 3]]>
+                </otherwise>
+            </choose>
+     	 <if test="searchBeginTime1 != null and searchBeginTime1 != ''">
+     	  <![CDATA[ and begin_time  >=#{searchBeginTime1}]]>
+     	 </if>
+     	 <if test="searchBeginTime2 != null and searchBeginTime2 != ''">
+     	  <![CDATA[ and begin_time < #{searchBeginTime2} ]]>
+     	 </if>
+     	</where>
+     	  order by id DESC
+    </select>
+
+    <insert id="insertCouponShare" parameterType="YXCouponShare" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_coupon_share(
+    	name,title,begin_time,end_time,page_properties,coupon_properties,
+    	rule_properties,create_id,create_time,update_id,update_time,type) 
+    	values(
+    	#{name},#{title},#{beginTime},#{endTime},#{pageProperties},#{couponProperties},
+    	#{ruleProperties},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime},
+    	#{type})
+    </insert>
+    
+    <update id="updateCouponShare" parameterType="YXCouponShare">
+    	update yx_cms_coupon_share set 
+    	<if test="name != null and name != ''">
+    	  name=#{name},
+    	</if>
+    	<if test="title != null and title != ''">
+    	  title=#{title},
+    	</if>
+    	<if test="beginTime!=null and beginTime !=''">
+    	 begin_time=#{beginTime},
+    	</if>
+    	<if test="endTime != null and endTime != ''">
+    	 end_time=#{endTime},
+    	</if>
+    	<if test="status != null and status != ''">
+    	 status=#{status},
+    	</if>
+    	<if test="pageProperties != null and pageProperties != ''">
+    	 page_properties=#{pageProperties},
+    	</if>
+    	<if test="couponProperties != null and couponProperties != ''">
+    	 coupon_properties=#{couponProperties},
+    	</if>
+    	<if test="couponProperties != null and couponProperties != ''">
+    	 rule_properties=#{ruleProperties},
+    	</if>
+    		update_id=#{updateId},
+    		update_time=#{updateTime}
+    	<where>
+    	 id=#{id}
+    	</where>
+    </update>
+
+
+    
+</mapper>

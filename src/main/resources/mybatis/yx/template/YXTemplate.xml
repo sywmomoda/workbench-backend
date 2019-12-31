@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXTemplate">
+ <sql id="selectSql">
+  select id,
+        name,
+        code,
+        type,
+        description,
+        thumbnail_url thumbnailUrl,
+        template_url templateUrl,
+        page_properties pageProperties,
+        module_types moduleTypes,
+        update_id updateId,
+        update_time updateTime
+   		from yx_cms_template
+ </sql>
+ <select id="selectAllYXTemplate" resultType="YXTemplate">
+    <include refid="selectSql"></include>
+ </select>
+ 
+ <select id="selectYXTemplateById" resultType="YXTemplate" parameterType="long">
+   <include refid="selectSql"></include>
+   <where>
+    id=#{id}
+   </where>
+ </select>
+ 
+ <update id="updateYXTemplate">
+   update yx_cms_template set name=#{name},page_properties=#{pageProperties},
+   type=#{type},code=#{code},description=#{description},thumbnail_url=#{thumbnailUrl},
+   template_url=#{templateUrl},module_types=#{moduleTypes},
+   update_id=#{updateId} where id=#{id} 
+ </update>
+ <insert id="insertYXTemplate" parameterType="YXTemplate">
+   insert into yx_cms_template(name,page_properties,type,code,description,
+   thumbnail_url,template_url,module_types,
+   create_id,update_id)values(#{name},#{pageProperties},
+   #{type},#{code},#{description},#{thumbnailUrl},#{templateUrl},
+   #{moduleTypes},#{createId},#{updateId})
+ </insert>
+</mapper>

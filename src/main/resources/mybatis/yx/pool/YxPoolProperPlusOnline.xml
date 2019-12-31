@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YxPoolProperPlus">
+	<sql id="YxPoolProperPlusOnline">
+		select id,
+		store_code storeCode,
+		commodity_id commodityId,
+		commodity_proper commodityProper,
+		create_id createId,
+		update_id updateId,
+		create_time createTime,
+		update_time updateTime
+        from yx_cms_pool_proper_plus_online
+	</sql>
+   <insert id="batchInsertOnlineYxPoolProper" parameterType="YxPoolProperPlus">
+     insert into yx_cms_pool_proper_plus_online(id,store_code,commodity_id,
+     commodity_proper,create_id,update_id)values
+		<foreach collection="list" item="item" index="index" separator="," >
+		 (#{item.id},#{item.storeCode},#{item.commodityId},#{item.commodityProper},#{item.createId},#{item.updateId})
+		</foreach>
+   </insert>
+    
+  <delete id="deleteOnlineYxPoolProper" parameterType="YxPoolProperPlus">
+   	  delete from yx_cms_pool_proper_plus_online where commodity_id =#{commodityId} 
+  </delete>  
+  
+  <update id="updateOnlineYxPoolProperCommodityId" parameterType="YxPoolProperPlus">
+     update  yx_cms_pool_proper_plus_online set commodity_id =#{commodityId} where id=#{id}
+  </update>
+    
+   <select id="selectOnlineYxPoolProperList" parameterType="long" resultType="YxPoolProperPlus">
+   <include refid="YxPoolProperPlusOnline"></include>
+   <where>
+      commodity_id = #{commodityId}
+   </where>
+   </select>
+
+    <delete id="delYxPoolProperPlusOnlineByCommodityId" parameterType="String">
+        delete from yx_cms_pool_proper_plus_online where commodity_id = #{commodityId}
+    </delete>
+
+</mapper>

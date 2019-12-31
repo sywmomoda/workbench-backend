@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="B2BCategory">
+	<sql id="selectB2BCategory">
+		select id,
+        	   seq seq,
+        	   name name,
+        	   store_code storeCode,
+        	   parent_seq parentSeq,
+        	   parent_seq_list parentSeqList,
+        	   level level,
+        	   type type,
+        	   si_seq siSeq,
+        	   si_status siStatus,
+        	   si_Pseq siPseq
+        from b2b_cms_category
+	</sql>
+
+    <select id="selectB2BCategorys" parameterType="B2BCategory" resultType="B2BCategory">
+    	<include refid="selectB2BCategory"/>
+    	<where>
+    		<if test="seq != null and seq != ''">
+    			<![CDATA[  
+              		and seq = #{seq}
+            	]]>  
+    		</if>
+    		<if test="parentSeq != null and parentSeq != ''">
+    			<![CDATA[  
+              		and parent_seq = #{parentSeq}
+            	]]>  
+    		</if>
+    		
+    		<if test="storeCode != null and storeCode != ''">
+    		  <![CDATA[  
+              		and store_code = #{storeCode}
+            	]]>
+    		</if>
+    		
+    		<if test="level != null and level != ''">
+    		  <![CDATA[  
+              		and level<=#{level}
+            	]]>
+    		</if>
+    	</where>
+    	ORDER BY ID ASC
+    </select>
+    
+    <select id="selectB2BCategoryCount" parameterType="B2BCategory" resultType="java.lang.Integer">
+    	select count(1) from b2b_cms_category
+    	<where>
+    		<if test="seq != null and seq != ''">
+    			<![CDATA[  
+              		and seq = #{seq}
+            	]]>  
+    		</if>
+    		<if test="parentSeq != null and parentSeq != ''">
+    			<![CDATA[  
+              		and parent_seq = #{parentSeq}
+            	]]>  
+    		</if>
+    	</where>
+    </select>
+    
+    <insert id="batchAddB2BCategory" useGeneratedKeys="true" parameterType="java.util.List">  
+	    insert into b2b_cms_category (seq,name,store_code,parent_seq,parent_seq_list,level,type,si_seq,si_Pseq,si_status)   
+	    values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.seq},#{item.name},#{item.storeCode},#{item.parentSeq},#{item.parentSeqList},
+	        #{item.level},#{item.type},#{item.siSeq},#{item.siPseq},#{item.siStatus})  
+	    </foreach>  
+	</insert>  
+	
+	<delete id="deleteAllB2BCategory" parameterType="B2BCategory">  
+	    delete from b2b_cms_category
+	    <where>
+	       <if test="storeCode != null and storeCode != ''">
+    		  <![CDATA[  
+              		 store_code = #{storeCode}
+            	]]>
+    		</if>
+	    </where>
+	</delete>  
+    
+</mapper>

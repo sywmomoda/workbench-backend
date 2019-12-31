@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Page">
+	<sql id="selectSalePage">
+		select id,
+        	   store_group_ids storeGroupIds,
+        	   xiao_qu_ids xiaoQuIds,
+        	   yx_cms_template_id templateId,
+        	   type,
+        	   page_properties pageProperties,
+        	   name,
+        	   modules,
+        	   url,
+        	   description,
+        	   status,
+        	   main_pic_url mainPicUrl,
+        	   activity_begin_time activityBeginTime,
+        	   activity_end_time activityEndTime,
+        	   administrator administrator,
+        	   search_words searchWords,
+        	   search_ad_pic searchAdPic,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime,
+        	   combine_id combineId
+        	   from yx_cms_page
+	</sql>
+	<sql id="selectSalePageMonitor">
+		select id id,
+			   combine_id combineId,
+        	   name,
+        	   activity_begin_time activityBeginTime,
+        	   activity_end_time activityEndTime
+        	   from yx_cms_page
+	</sql>
+	<sql id="selectSaleNews">
+	   select name,create_time
+	   from yx_cms_page
+	</sql>
+    <select id="selectSalePageById" parameterType="long" resultType="Page">
+    	<include refid="selectSalePage"/>
+         where id = #{id} 
+    </select>
+    
+    <select id="selectSalePageByIds" parameterType="String" resultType="Page">
+    	<include refid="selectSalePage"/>
+    	 where id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+    
+    <select id="selectEmployPage" parameterType="Page" resultType="Page">
+    	<include refid="selectSalePage"/>
+    	<where>
+    		<if test="name != null and name != ''">
+    			<![CDATA[  
+              		and name like '%' #{name} '%'
+            	]]>  
+    		</if>
+    		<if test="templateId != null and templateId != ''">
+    			<![CDATA[  
+              		and yx_cms_template_id = #{templateId}
+            	]]>  
+    		</if>
+    		<if test="id != null and  id != ''">
+    			<![CDATA[  
+              		and id = #{id}
+            	]]>  
+    		</if>
+    		<if test="type != null and type != ''">
+    			<![CDATA[  
+              		and type = #{type}
+            	]]>  
+    		</if>
+    	</where>
+    	order by activity_begin_time desc
+    </select>
+    
+    <select id="selectSalePages" parameterType="Page" resultType="Page">
+         <include refid="selectSalePage"/>
+         <where>
+         	<if test="activityBeginTime != null and activityBeginTime != ''">
+    			<![CDATA[  
+              		and activity_end_time >=  #{activityBeginTime}
+            	]]>  
+    		</if>
+    		<if test="activityEndTime != null and activityEndTime != ''">
+    			<![CDATA[  
+              		and activity_begin_time <=  #{activityEndTime}
+            	]]>  
+    		</if>
+    		<if test="status != null and status != ''">
+    			<![CDATA[  
+              		and status =  #{status}
+            	]]>  
+    		</if>
+    		<if test="createId != null and createId != ''" >
+    			<![CDATA[  
+              		and create_id =  #{createId}
+            	]]>  
+    		</if>
+    		<if test="name != null and name != ''" >
+    			<![CDATA[  
+              		and name like '%' #{name} '%'
+            	]]>  
+    		</if>
+    		<if test="id != null and id != ''" >
+    			<![CDATA[  
+              		and id =  #{id}
+            	]]>  
+    		</if>
+    		<if test="type != null and type != ''" >
+    			<![CDATA[  
+              		and type =  #{type}
+            	]]>  
+    		</if>
+    		<if test="storeGroupIds != null and storeGroupIds != ''" >
+    			<![CDATA[  
+              		and store_group_ids like '%' #{storeGroupIds} '%'
+            	]]>  
+    		</if>
+         </where>
+         order by id desc
+    </select> 
+    
+    <select id="selectSalePageCount" parameterType="Page" resultType="int">
+         select count(*) from yx_cms_page
+         <where>
+         	status =1 
+         	<if test="activityBeginTime != null and activityBeginTime != ''">
+    			<![CDATA[  
+              		and activity_begin_time <=  #{activityBeginTime}
+            	]]>  
+    		</if>
+    		<if test="activityEndTime != null and activityEndTime != ''">
+    			<![CDATA[  
+              		and activity_end_time >=  #{activityEndTime}
+            	]]>  
+    		</if>
+         </where>
+    </select>
+    
+    <select id="selectCreateSalePageCount" parameterType="Page" resultType="int">
+         select count(*) from yx_cms_page
+         <where>
+         	status =1 
+         	<if test="activityBeginTime != null and activityBeginTime != ''">
+    			<![CDATA[  
+              		and create_time >=  #{activityBeginTime}
+            	]]>  
+    		</if>
+    		<if test="activityEndTime != null and activityEndTime != ''">
+    			<![CDATA[  
+              		and create_time <=  #{activityEndTime}
+            	]]>  
+    		</if>
+         </where>
+    </select> 
+    
+    <select id="selectSalePageCountByTime" parameterType="Page" resultType="int">
+         select count(*) from yx_cms_page
+         <where>
+         	status =1 
+         	<if test="activityBeginTime != null and activityBeginTime != '' and activityEndTime != null and activityEndTime != ''">
+        		<![CDATA[ 
+        		and (activity_begin_time <=  #{activityEndTime} and activity_end_time >=  #{activityBeginTime})
+        		]]>    		
+    		</if>
+         </where>
+    </select> 
+    
+    <insert id="insertSalePage" parameterType="Page" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_page(
+    		   store_group_ids,
+				xiao_qu_ids,
+        	   yx_cms_template_id,
+        	   type,
+        	   page_properties,
+        	   name,
+        	   modules,
+        	   url,
+        	   description,
+        	   status,
+        	   main_pic_url,
+        	   activity_begin_time,
+        	   activity_end_time,
+        	   administrator,
+				<if test="searchWords != null">search_words,</if>
+				<if test="searchAdPic != null">search_ad_pic,</if>
+        	   create_id,
+        	   create_time,
+        	   update_id) 
+    	values(
+    		   #{storeGroupIds},
+				#{xiaoQuIds},
+        	   #{templateId},
+        	   #{type},
+        	   #{pageProperties},
+        	   #{name},
+        	   #{modules},
+        	   #{url},
+        	   #{description},
+        	   #{status},
+        	   #{mainPicUrl},
+        	   #{activityBeginTime},
+        	   #{activityEndTime},
+        	   #{administrator},
+				<if test="searchWords != null">#{searchWords},</if>
+				<if test="searchAdPic != null">#{searchAdPic},</if>
+        	   #{createId},
+        	   #{createTime},
+        	   #{updateId})
+    </insert>
+    
+    
+    <update id="updateSalePage" parameterType="Page">
+    	update yx_cms_page 
+    	   <set>
+    		     <if test="storeGroupIds != null" >store_group_ids=#{storeGroupIds},</if>
+			     <if test="xiaoQuIds != null" >xiao_qu_ids=#{xiaoQuIds},</if>
+                 <if test="templateId != null" >yx_cms_template_id=#{templateId},</if>
+                 <if test="type != null" > type=#{type},</if>
+                 <if test="pageProperties != null" >page_properties=#{pageProperties},</if>
+                 <if test="name != null" > name=#{name},</if>
+                 <if test="modules != null" >modules=#{modules},</if>
+                 <if test="storeGroupIds != null" >store_group_ids=#{storeGroupIds},</if>
+                 <if test="url != null" >url=#{url},</if>
+                 <if test="description != null" >description=#{description},</if>
+                 <if test="status != null" >status=#{status},</if>
+                 <if test="mainPicUrl != null" > main_pic_url=#{mainPicUrl},</if>
+                 <if test="activityBeginTime != null" >activity_begin_time=#{activityBeginTime},</if>
+                 <if test="activityEndTime != null" >activity_end_time=#{activityEndTime},</if>
+                 <if test="administrator != null" >administrator=#{administrator},</if>
+                <if test="searchWords != null" >search_words=#{searchWords},</if>
+                <if test="searchAdPic != null" >search_ad_pic=#{searchAdPic},</if>
+                <if test="updateId != null" >update_id=#{updateId}</if>
+           </set>
+    	where id=#{id}
+    </update>
+    
+    <update id="updatePageStatus" parameterType="Page">
+    	update yx_cms_page set  status=#{status} where id=#{id}
+    </update>
+
+	<update id="updatePageArea" parameterType="Page">
+		update yx_cms_page
+		<set>
+			<if test="storeGroupIds != null" >store_group_ids=#{storeGroupIds}</if>
+		</set>
+		where xiao_qu_ids=#{xiaoQuIds} and yx_cms_template_id=#{templateId}
+    </update>
+    
+    <select id="selectSalePagesForClick" parameterType="Page" resultType="Page">
+         <include refid="selectSalePage"/>
+         <where>
+         	status=1
+         	<if test="activityBeginTime != null and activityBeginTime != ''">
+    			<![CDATA[  
+              		and activity_begin_time <=  #{activityBeginTime}
+            	]]>  
+    		</if>
+    		<if test="activityEndTime != null and activityEndTime != ''">
+    			<![CDATA[  
+              		and activity_end_time >=  #{activityEndTime}
+            	]]>  
+    		</if>
+         </where>
+         order by id desc
+    </select> 
+    <!--  
+    <select id="selectOnlineAllPageId" resultType="long" parameterType="int" >
+      select id from yx_cms_page 
+    </select>
+    -->
+    <select id="selectPageCreateByTime" resultType="Page" parameterType="map">
+     <include refid="selectSalePage"/>
+          <where>
+         	online =0 
+         	<if test="beginTime != null and beginTime != ''">
+    			<![CDATA[  
+              		and create_time >=  #{beginTime}
+            	]]>  
+    		</if>
+    		<if test="endTime != null and endTime != ''">
+    			<![CDATA[  
+              		and create_time <=  #{endTime}
+            	]]>  
+    		</if>
+         </where>
+         order by create_time desc
+    </select>
+    
+    <select id="selectPageCreateCount" resultType="int" parameterType="map">
+         select count(id) from yx_cms_page
+          <where>
+         	online =0 
+         	<if test="beginTime != null and beginTime != ''">
+    			<![CDATA[  
+              		and create_time >=  #{beginTime}
+            	]]>  
+    		</if>
+    		<if test="endTime != null and endTime != ''">
+    			<![CDATA[  
+              		and create_time <=  #{endTime}
+            	]]>  
+    		</if>
+         </where>
+         order by create_time desc
+    </select>
+    
+    <select id="selectPageForLinkSelect" resultType="page" parameterType="page">
+         <include refid="selectSalePage"/>
+          <where>
+         	status =1 
+         	<if test="activityEndTime != null and activityEndTime != ''">
+    			<![CDATA[  
+              		and activity_end_time >=  #{activityEndTime}
+            	]]>  
+    		</if>
+    		<if test="name != null and name != ''">
+    			<![CDATA[  
+              		and name like '%' #{name} '%'
+            	]]>  
+    		</if>
+    		<if test="id != null and id != ''">
+    			<![CDATA[  
+              		and id = #{id}
+            	]]>  
+    		</if>
+    		<if test="combineId != null and combineId != ''">
+    			<![CDATA[  
+              		and combine_id = #{combineId}
+            	]]>  
+    		</if> 
+         </where>
+         order by id desc 
+    </select>
+    
+    <delete id="deletePage">
+      delete  from yx_cms_page where  id = #{id}
+    </delete>
+</mapper>

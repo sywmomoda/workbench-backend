@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="YXWelcome">
+ <sql id="selectSql">
+  select id,
+  		name,
+  		begin_time beginTime,
+  		end_time endTime,
+  		status,
+  		show_time showTime,
+  		create_id createId,
+  		create_time createTime,
+  		update_id updateId,
+  		update_time updateTime
+   from yx_cms_welcome
+ </sql>
+ 
+ <select id="selectAllYXWelcome" resultType="YXWelcome">
+     <include refid="selectSql"></include>
+     <where>
+       <if test="id > 0">
+         and id=#{id}
+       </if>
+       <if test="name!=null and name !=''">
+        and name like concat(concat('%',#{name}),'%')
+       </if>
+       <if test="beginTime!=null and beginTime!=''">
+              <![CDATA[   AND begin_time <= #{beginTime}]]>
+       </if>
+            <!-- 查询条件：创建结束时间 -->
+       <if test="endTime!=null and endTime!=''">
+               <![CDATA[ AND end_time >= #{endTime} ]]>
+       </if>
+       
+       <if test="status==1">
+         <![CDATA[   AND begin_time <= now() AND now() <= end_time AND status <> -1]]>
+       </if>
+       
+       <if test="status==2">
+         <![CDATA[   AND begin_time >= now() ]]>
+       </if>
+       
+       <if test="status==0">
+         <![CDATA[   AND end_time <= now() ]]>
+       </if>
+       
+       <if test="status == -1">
+        and status =-1
+       </if>
+       
+     </where>
+     order by id desc
+ </select>
+ 
+ <select id="selectYXWelcomeAfterNow" resultType="YXWelcome">
+ 	 <include refid="selectSql"></include>
+     <where>
+     	status = 1
+     	<if test="endTime!=null and endTime!=''">
+			<![CDATA[ AND end_time >= #{endTime} ]]>
+        </if>
+     </where>
+ </select>
+ 
+ <select id="selectYXWelcomById" resultType="YXWelcome" parameterType="long">
+   <include refid="selectSql"></include>
+   <where>
+     id=#{id}
+   </where>
+ </select>
+ 
+ <insert id="insertYXWelcome" useGeneratedKeys="true" keyProperty="id" parameterType="YXWelcome">
+ insert into yx_cms_welcome(name,begin_time,end_time,show_time,
+ create_id,update_id)values(#{name},#{beginTime},#{endTime},#{showTime},#{createId},#{updateId})
+ </insert>
+
+  <update id="updaetYXWelcomeStatus" parameterType="long">
+    update yx_cms_welcome set status = -1 where id=#{id}
+  </update>
+
+  <delete id="deleteYXWelcome" parameterType="long">
+   delete from yx_cms_welcome where id=#{id}
+  </delete>
+  
+  <update id="updateYXWelcome"  parameterType="YXWelcome">
+   update yx_cms_welcome set name=#{name},begin_time=#{beginTime},
+   end_time=#{endTime},show_time=#{showTime},
+   update_id=#{updateId} where id = #{id}
+  </update>
+ 
+
+
+ 
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC  
+    "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Module">
+	<sql id="selectModule">
+		select id,
+        	   yx_cms_page_id pageId,
+        	   yx_cms_module_type_id moduleTypeId,
+        	   name,
+        	   store_scope storeScope,
+        	   module_properties moduleProperties,
+        	   administrator,
+        	   module_category moduleCategory,
+        	   create_id createId,
+        	   create_time createTime,
+        	   update_id updateId,
+        	   update_time updateTime
+        	   from yx_cms_module
+	</sql>
+
+    <select id="selectModuleById" parameterType="long" resultType="Module">
+    	<include refid="selectModule"/>
+         where id = #{id} 
+    </select> 
+    
+    <select id="selectModulesByIds" parameterType="String" resultType="Module">
+    	<include refid="selectModule"/>
+    	 where id in  
+		  <foreach item="item" collection="array" open="(" separator="," close=")">#{item}</foreach>
+    </select>
+    
+    <insert id="insertModule" parameterType="Module" useGeneratedKeys="true" keyProperty="id">
+    	insert into yx_cms_module(
+    	yx_cms_page_id,yx_cms_module_type_id,name,store_scope,module_properties,administrator,
+    	create_id,create_time,update_id,update_time,
+    	module_category) 
+    	values(
+    	#{pageId},#{moduleTypeId},#{name},#{storeScope},#{moduleProperties},#{administrator},
+    	#{createId},
+    	#{createTime},
+    	#{updateId},
+    	#{updateTime},
+    	#{moduleCategory})
+    </insert>
+    
+    <update id="updateModule" parameterType="Module">
+    	update yx_cms_module set 
+    	yx_cms_page_id=#{pageId},
+    	yx_cms_module_type_id=#{moduleTypeId},
+    	name=#{name},
+    	store_scope=#{storeScope},
+    	module_properties=#{moduleProperties}, 
+    	administrator=#{administrator},
+    	update_id=#{updateId},
+    	update_time=#{updateTime}
+    	where id=#{id}
+    </update>
+    <select id="selectModulesForValidate" parameterType="map" resultType="Module">
+    	<include refid="selectModule"/>
+        <where>
+    		<if test="moduleTypeId != null and moduleTypeId != ''">
+    			<![CDATA[  
+              		and module_type_id =#{moduleTypeId}
+            	]]>  
+    		</if>
+    		<if test="pageId != null and pageId != ''">
+    			<![CDATA[  
+              		and page_id = #{pageId}
+            	]]>  
+    		</if>
+    		<if test="exceptId != null and  exceptId != ''">
+    			<![CDATA[  
+              		and id <> #{exceptId}
+            	]]>  
+    		</if>
+    		<if test="moduleIds != null and moduleIds != ''">
+              		and id in
+    				<foreach item="id" collection="moduleIds" open="(" separator="," close=")">#{moduleIds}</foreach>
+    		</if>
+    	</where>
+    </select> 
+    
+    <select id="selectModuleAll" parameterType="Module" resultType="Module">
+     <include refid="selectModule"></include>
+     <where>
+       <if test="id != null and id != ''">
+          and id=#{id}
+       </if>
+     
+      <if test="pageId !=null and pageId !=''">
+          and yx_cms_page_id = #{pageId}
+      </if>
+     
+     </where>
+    </select>
+    
+</mapper>
